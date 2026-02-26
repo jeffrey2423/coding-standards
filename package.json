@@ -1,0 +1,19 @@
+{
+  "name": "@jeffrey2423/coding-standards",
+  "version": "1.0.0",
+  "description": "Copy coding standards and architecture guides into your project",
+  "license": "MIT",
+  "bin": {
+    "coding-standards": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "standards/"
+  ],
+  "keywords": [
+    "coding-standards",
+    "architecture",
+    "clean-architecture",
+    "ddd"
+  ]
+}
