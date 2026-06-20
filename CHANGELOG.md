@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Automated GitHub Releases: when `package.json`'s version changes, the publish workflow creates the `vX.Y.Z` tag and a release with notes from `CHANGELOG.md`.
+- Dependabot config keeping GitHub Actions and npm dependencies current, with auto-merge for passing patch/minor updates (major bumps flagged for manual review).
+- `CODEOWNERS` requesting the maintainer as reviewer on every PR.
+- Branch protection on `main` (PR-only, CI-gated, force-push/deletion blocked) documented in the README.
+
+### Changed
+- Bumped `actions/checkout` to v7 and `actions/setup-node` to v6.
+
 ## [2.0.1] - 2026-06
 
 ### Added
