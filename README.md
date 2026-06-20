@@ -3,8 +3,10 @@
 [![npm version](https://img.shields.io/npm/v/@jeffrey2423/coding-standards.svg)](https://www.npmjs.com/package/@jeffrey2423/coding-standards)
 [![npm downloads](https://img.shields.io/npm/dm/@jeffrey2423/coding-standards.svg)](https://www.npmjs.com/package/@jeffrey2423/coding-standards)
 [![CI](https://github.com/jeffrey2423/coding-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/jeffrey2423/coding-standards/actions/workflows/ci.yml)
+[![node](https://img.shields.io/node/v/@jeffrey2423/coding-standards.svg)](https://www.npmjs.com/package/@jeffrey2423/coding-standards)
 [![license: MIT](https://img.shields.io/npm/l/@jeffrey2423/coding-standards.svg)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://www.conventionalcommits.org/)
 
 Modern, **AI-ready** coding standards, architectural patterns and technical conventions for building enterprise-scale, greenfield applications. Enforces **Clean Architecture**, **Domain-Driven Design (DDD)** and modern **microservices / microfrontends** patterns across backend, web and mobile.
 
@@ -129,3 +131,27 @@ first, then load standards on demand per their `load_when` triggers.
 ```
 
 See `core/ai-collaboration.md` for the full agent protocol.
+
+## Contributing & governance
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md).
+
+**How changes land.** The `main` branch is protected:
+
+- Every change goes through a **pull request** — no direct pushes, maintainer included.
+- **CI must pass** (`Installer smoke test` on Node 18 / 20 / 22) before a PR can merge.
+- Force-pushes and deletion of `main` are blocked.
+- **Releases are automated** — bump `version` in `package.json`, merge to `main`, and the
+  workflow publishes to npm and opens the matching `vX.Y.Z` GitHub Release (notes from
+  `CHANGELOG.md`).
+- Dependency updates come via Dependabot; patch/minor bumps auto-merge once CI is green,
+  major bumps wait for manual review.
+
+To contribute: branch from `main`, commit with
+[Conventional Commits](https://www.conventionalcommits.org/), open a PR, and make sure CI
+is green.
+
+## License
+
+[MIT](LICENSE) © Jeffrey Rios
