@@ -684,7 +684,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 - Infrastructure exceptions for external service failures
 - Global exception middleware for API responses
 
-### Error Response Format (Problem Details RFC 7807)
+### Error Response Format (Problem Details RFC 9457)
 ```csharp
 public record ProblemDetailsResponse
 {

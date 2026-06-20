@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-06
+
+### Fixed
+- `backend-standards.md` cited Problem Details as **RFC 7807** while `public-api-facade.md` and `microservice-anatomy.md` use **RFC 9457** (which obsoletes 7807). Unified `backend-standards.md` to RFC 9457 so the Problem Details reference is consistent across the package.
+
 ## [2.3.0] - 2026-06
 
 ### Added
@@ -87,6 +92,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.3.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.1
 [2.3.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.0
 [2.2.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.1
 [2.2.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.0
