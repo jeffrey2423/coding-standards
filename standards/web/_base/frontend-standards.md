@@ -627,7 +627,7 @@ describe('AddToCart UseCase', () => {
     const input = { productId: 'prod-1', quantity: -1 };
     
     await expect(addToCartUseCase.execute(input)).rejects.toThrow(
-      'La cantidad debe ser mayor a 0'
+      'Quantity must be greater than 0'
     );
   });
 });
@@ -645,7 +645,7 @@ import { CartItem } from '../CartItem';
 
 describe('CartItem', () => {
   const defaultProps = {
-    item: { id: '1', name: 'Producto Test', quantity: 2, price: 100 },
+    item: { id: '1', name: 'Test Product', quantity: 2, price: 100 },
     onRemove: vi.fn(),
   };
 
@@ -653,14 +653,14 @@ describe('CartItem', () => {
     render(<CartItem {...defaultProps} />);
     
     expect(screen.getByTestId('cart-item')).toBeInTheDocument();
-    expect(screen.getByText('Producto Test')).toBeInTheDocument();
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
   });
 
   it('should handle remove action', async () => {
     const user = userEvent.setup();
     render(<CartItem {...defaultProps} />);
     
-    await user.click(screen.getByRole('button', { name: /eliminar/i }));
+    await user.click(screen.getByRole('button', { name: /remove/i }));
     
     expect(defaultProps.onRemove).toHaveBeenCalledWith('1');
   });
@@ -692,7 +692,7 @@ describe('CartItem', () => {
 
 ```typescript
 // ✅ Correct - semantic HTML first
-<button onClick={handleSubmit}>Guardar</button>
+<button onClick={handleSubmit}>Save</button>
 
 // ✅ Correct - ARIA when necessary
 <div 
@@ -704,7 +704,7 @@ describe('CartItem', () => {
 </div>
 
 // ❌ Incorrect - unnecessary ARIA
-<button role="button" aria-label="button">Guardar</button>
+<button role="button" aria-label="button">Save</button>
 ```
 
 ---
@@ -815,10 +815,10 @@ export class ErrorBoundary extends Component<Props, State> {
       return this.props.fallback || (
         <div className="p-4 text-center">
           <h2 className="text-lg font-semibold text-red-600">
-            Algo salió mal
+            Something went wrong
           </h2>
           <p className="text-gray-600">
-            Por favor, intenta recargar la página
+            Please reload the page
           </p>
         </div>
       );
@@ -842,7 +842,7 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message: string }>) => {
-    const message = error.response?.data?.message || 'Error de conexión';
+    const message = error.response?.data?.message || 'Connection error';
     
     // User-friendly message
     return Promise.reject(new Error(message));
@@ -876,57 +876,35 @@ apiClient.interceptors.response.use(
 
 ## 13. Language Standards
 
-### 13.1 Spanish for All User-Facing Content
+### 13.1 User-facing text follows the product locale
 
-**CRITICAL RULE: All text visible to the end user MUST be in Spanish.**
+User-facing text (labels, buttons, messages, validation errors, emails, notifications) must **not be hardcoded** in components. Route it through the internationalization (i18n) layer so the rendered language is the product's configured locale — a configuration choice, never a value baked into code. Application code, identifiers, comments, commits, logs, and documentation are **always English**.
 
-#### ✅ Spanish Required
+> Example snippets in these standards use English strings for readability. In a real project every user-facing string comes from the i18n catalog (message keys), so switching or adding a locale never touches component code.
 
-- UI labels, buttons, forms, messages, notifications
-- API responses, validation errors, email templates
-- Any text the user sees (frontend or backend)
-
-#### ✅ English Required
-
-- Code (variables, functions, classes)
-- Technical logs, comments, git commits
-- Technical documentation for developers
-
-#### ❌ Never Mix Languages in Visible Text
-
+#### ✅ Correct — strings come from the i18n layer; code in English
 ```typescript
-// ✅ CORRECT
-<Button>Guardar</Button>
-toast.success("Datos guardados correctamente");
-throw new BadRequestException('No se pudo crear el usuario');
-
-// ❌ INCORRECT
-<Button>Save cambios</Button>
-toast.error("Failed al guardar");
-throw new BadRequestException('Invalid datos proporcionados');
+<Button>{t('actions.save')}</Button>
+toast.success(t('messages.saved'));
+throw new BadRequestException(t('errors.userCreateFailed'));
 ```
 
-### 13.2 Implementation
+#### ❌ Wrong — user-facing text hardcoded in a component
+```typescript
+<Button>Save changes</Button>          // not translatable; bypasses i18n
+toast.error('Could not save');         // belongs in the message catalog
+```
+
+### 13.2 Message catalog (i18n)
+
+Centralize user-facing strings as message keys resolved by the i18n layer for the active locale:
 
 ```typescript
-// shared/constants/messages.ts
-export const MESSAGES = {
-  SUCCESS: {
-    SAVED: 'Datos guardados correctamente',
-    DELETED: 'Elemento eliminado correctamente',
-    UPDATED: 'Información actualizada',
-  },
-  ERROR: {
-    GENERIC: 'Ha ocurrido un error. Por favor, intenta de nuevo',
-    NOT_FOUND: 'El recurso solicitado no fue encontrado',
-    UNAUTHORIZED: 'No tienes permisos para realizar esta acción',
-    VALIDATION: 'Por favor, verifica los datos ingresados',
-  },
-  LOADING: {
-    DEFAULT: 'Cargando...',
-    SAVING: 'Guardando...',
-    PROCESSING: 'Procesando...',
-  },
+// shared/i18n/messages.ts  — keys are English; values come from the active locale catalog
+export const messageKeys = {
+  actions: { save: 'actions.save', delete: 'actions.delete' },
+  messages: { saved: 'messages.saved', deleted: 'messages.deleted' },
+  errors: { generic: 'errors.generic', notFound: 'errors.notFound', unauthorized: 'errors.unauthorized' },
 } as const;
 ```
 
@@ -1029,7 +1007,7 @@ function NotFoundPage() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-6xl font-bold">404</h1>
-        <p className="mt-4">Página no encontrada</p>
+        <p className="mt-4">Page not found</p>
       </div>
     </div>
   );
@@ -1185,7 +1163,7 @@ export default defineConfig({
 - [ ] Add unit tests for use cases
 - [ ] Add component tests
 - [ ] Verify accessibility (axe)
-- [ ] Validate Spanish texts
+- [ ] Validate that user-facing text comes from the i18n catalog
 
 ---
 
