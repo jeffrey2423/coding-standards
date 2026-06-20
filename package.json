@@ -3,6 +3,15 @@
   "version": "2.0.0",
   "description": "Pick and copy modern, AI-ready coding standards and architecture guides into your project",
   "license": "MIT",
+  "author": "Jeffrey Rios",
+  "homepage": "https://github.com/jeffrey2423/coding-standards#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffrey2423/coding-standards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jeffrey2423/coding-standards/issues"
+  },
   "bin": {
     "coding-standards": "bin/cli.js"
   },

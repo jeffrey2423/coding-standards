@@ -1,0 +1,21 @@
+name: 💡 Feature / standard request
+description: Propose a new standard, track, or installer capability
+labels: [enhancement]
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to add or change?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why? What problem does it solve?
+    validations:
+      required: true
+  - type: input
+    id: references
+    attributes:
+      label: References (2026 sources, official docs)
+      description: Standards must be backed by current, verifiable sources.

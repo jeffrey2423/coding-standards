@@ -1,5 +1,11 @@
 # Coding Standards & Architecture Guide
 
+[![npm version](https://img.shields.io/npm/v/@jeffrey2423/coding-standards.svg)](https://www.npmjs.com/package/@jeffrey2423/coding-standards)
+[![npm downloads](https://img.shields.io/npm/dm/@jeffrey2423/coding-standards.svg)](https://www.npmjs.com/package/@jeffrey2423/coding-standards)
+[![CI](https://github.com/jeffrey2423/coding-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/jeffrey2423/coding-standards/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/npm/l/@jeffrey2423/coding-standards.svg)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Modern, **AI-ready** coding standards, architectural patterns and technical conventions for building enterprise-scale, greenfield applications. Enforces **Clean Architecture**, **Domain-Driven Design (DDD)** and modern **microservices / microfrontends** patterns across backend, web and mobile.
 
 Designed to be consumed by **AI coding agents** (Claude Code, Cursor, Copilot) as much as by humans: every document carries `load_when` front-matter, and the installer generates an `INDEX.md` telling the agent exactly which standards are active.

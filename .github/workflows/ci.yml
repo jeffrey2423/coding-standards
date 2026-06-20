@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    name: Installer smoke test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Help output
+        run: node bin/cli.js --help
+
+      - name: Install everything into a scratch dir
+        run: |
+          mkdir -p /tmp/scratch
+          cd /tmp/scratch
+          node "$GITHUB_WORKSPACE/bin/cli.js" --all
+          test -f coding-standards/INDEX.md
+          test -f coding-standards/.standards-manifest.json
+          echo "Installed files:"; find coding-standards -name '*.md' | wc -l
+
+      - name: Re-run is idempotent (shrink selection)
+        run: |
+          cd /tmp/scratch
+          node "$GITHUB_WORKSPACE/bin/cli.js" --mobile=flutter --yes
+          test ! -d coding-standards/backend
+          test ! -d coding-standards/web
+
+      - name: Package contents (no node_modules)
+        run: |
+          npm pack --dry-run --json > pack.json
+          node -e "const f=require('./pack.json')[0].files.map(x=>x.path); if(f.some(p=>p.includes('node_modules'))) {console.error('node_modules leaked!');process.exit(1)}; console.log('package files:', f.length)"

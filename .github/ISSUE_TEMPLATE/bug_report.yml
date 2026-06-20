@@ -1,0 +1,39 @@
+name: 🐛 Bug report
+description: Something in the installer or a standard is wrong or broken
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Installer (CLI)
+        - A standard's content
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `npx @jeffrey2423/coding-standards --backend`
+        2. ...
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "2.0.0"
+  - type: input
+    id: env
+    attributes:
+      label: Node / OS
+      placeholder: "Node 20, Windows 11"
