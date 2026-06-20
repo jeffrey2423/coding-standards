@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-06
+
+### Docs
+- Refresh the Quick Start installer sample: include `BFF` in the architecture options and correct the copied-file count (14 → 19) to reflect the BFF standard and decision map.
+
 ## [2.1.0] - 2026-06
 
 ### Added
@@ -53,6 +58,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.1.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.1
 [2.1.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.0
 [2.0.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.0.1
 [2.0.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.0.0
