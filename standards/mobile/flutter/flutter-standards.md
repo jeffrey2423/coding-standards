@@ -18,8 +18,8 @@ updated: 2026-06
 
 | Category | Technology | Version | Notes |
 |----------|------------|---------|-------|
-| **SDK** | Flutter | 3.27+ | Stable channel only |
-| **Language** | Dart | 3.6+ | Sound null safety, records, patterns |
+| **SDK** | Flutter | 3.44+ | Stable channel only (latest stable, 2026) |
+| **Language** | Dart | 3.8+ | Sound null safety, records, patterns |
 | **State** | Riverpod | 3+ | Code-generated, annotation-based |
 | **Navigation** | GoRouter | 14+ | Declarative, deep-link ready |
 | **DI** | get_it + injectable | Latest | Service locator with code generation |
@@ -389,11 +389,11 @@ class CartNotifier extends _$CartNotifier {
   }
 
   Exception _mapFailure(CartFailure failure) => switch (failure) {
-        InvalidQuantity() => Exception('La cantidad debe ser mayor a cero'),
+        InvalidQuantity() => Exception('Quantity must be greater than zero'),
         ProductNotFound(:final productId) =>
-          Exception('Producto $productId no encontrado'),
+          Exception('Product $productId not found'),
         CartLimitExceeded(:final maxItems) =>
-          Exception('El carrito no puede tener más de $maxItems artículos'),
+          Exception('Cart cannot contain more than $maxItems items'),
         ServerFailure(:final message) => Exception(message),
       };
 }
@@ -477,7 +477,7 @@ class CartRepository implements ICartRepository {
     } on NetworkException catch (e) {
       return left(ServerFailure(e.message));
     } catch (_) {
-      return left(const ServerFailure('Error inesperado'));
+      return left(const ServerFailure('Unexpected error'));
     }
   }
 
@@ -584,7 +584,7 @@ class CartPage extends ConsumerWidget {
     final cartState = ref.watch(cartNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Carrito')),
+      appBar: AppBar(title: const Text('Cart')),
       body: switch (cartState) {
         AsyncLoading() => const LoadingSkeleton(),
         AsyncError(:final error) => ErrorView(
@@ -632,14 +632,14 @@ class CartItemWidget extends StatelessWidget {
     return ListTile(
       key: ValueKey(item.id),
       title: Text(item.productName),
-      subtitle: Text('Cantidad: ${item.quantity}'),
+      subtitle: Text('Quantity: ${item.quantity}'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('\$${item.totalPrice.toStringAsFixed(2)}'),
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            tooltip: 'Eliminar del carrito',
+            tooltip: 'Remove from cart',
             onPressed: () => onRemove(item.id),
           ),
         ],
@@ -1029,7 +1029,7 @@ void main() {
       const item = CartItem(
         id: '1',
         productId: 'p1',
-        productName: 'Producto Test',
+        productName: 'Test Product',
         quantity: 2,
         unitPrice: 50.0,
       );
@@ -1047,7 +1047,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Producto Test'), findsOneWidget);
+      expect(find.text('Test Product'), findsOneWidget);
       expect(find.text('\$100.00'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.delete_outline));
@@ -1093,7 +1093,7 @@ Future<void> main() async {
 
 ### UI-Level Error Handling
 
-Use `AsyncValue`'s pattern matching (as shown in the page example above). Never expose raw exception messages to the UI. Map domain failures to user-friendly Spanish strings in the notifier.
+Use `AsyncValue`'s pattern matching (as shown in the page example above). Never expose raw exception messages to the UI. Map domain failures to user-friendly English strings in the notifier.
 
 ---
 
@@ -1126,7 +1126,7 @@ Use `AsyncValue`'s pattern matching (as shown in the page example above). Never 
 
 ## Localization
 
-All user-visible text must be in Spanish. Code, logs, comments, and git commits stay in English (same rule as frontend and backend standards).
+All user-visible text must be in English. Code, logs, comments, and git commits stay in English (same rule as frontend and backend standards).
 
 ```yaml
 # pubspec.yaml
@@ -1140,17 +1140,17 @@ output-localization-file: app_localizations.dart
 ```
 
 ```json
-// lib/l10n/app_es.arb
+// lib/l10n/app_en.arb
 {
-  "@@locale": "es",
-  "cartTitle": "Carrito",
-  "cartEmpty": "Tu carrito está vacío",
-  "addToCart": "Agregar al carrito",
-  "removeFromCart": "Eliminar del carrito",
-  "checkout": "Finalizar compra",
-  "errorGeneric": "Ha ocurrido un error. Intenta de nuevo.",
-  "errorNotFound": "El recurso solicitado no fue encontrado",
-  "loading": "Cargando..."
+  "@@locale": "en",
+  "cartTitle": "Cart",
+  "cartEmpty": "Your cart is empty",
+  "addToCart": "Add to cart",
+  "removeFromCart": "Remove from cart",
+  "checkout": "Checkout",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "errorNotFound": "The requested resource was not found",
+  "loading": "Loading..."
 }
 ```
 
@@ -1186,8 +1186,8 @@ name: your_app
 description: Enterprise Flutter app
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: '>=3.27.0'
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.44.0'
 
 dependencies:
   flutter:
@@ -1264,7 +1264,7 @@ flutter:
 ## Implementation Checklist
 
 ### Project Setup
-- [ ] Flutter 3.27+ stable channel
+- [ ] Flutter 3.44+ stable channel
 - [ ] `very_good_analysis` lint rules configured
 - [ ] `l10n.yaml` and `.arb` files created
 - [ ] `get_it` + `injectable` wired in `main.dart`
@@ -1293,7 +1293,7 @@ flutter:
 
 ### Quality
 - [ ] `flutter analyze` returns zero warnings
-- [ ] All user-visible strings in Spanish `.arb` files
+- [ ] All user-visible strings in `.arb` files
 - [ ] No hardcoded colors or text sizes (use theme tokens)
 - [ ] `const` constructors on all leaf widgets
 - [ ] `ListView.builder` for all dynamic lists

@@ -18,10 +18,10 @@ updated: 2026-06
 
 | Category | Technology | Version | Notes |
 |----------|------------|---------|-------|
-| **Framework** | React Native | 0.77+ | New Architecture default (Fabric + TurboModules) |
-| **Platform** | Expo | SDK 53+ | Managed workflow with EAS Build |
+| **Framework** | React Native | 0.85+ | New Architecture assumed stable (Fabric + TurboModules); React 19.2 |
+| **Platform** | Expo | SDK 56+ | Managed workflow with EAS Build (latest SDK, 2026) |
 | **Language** | TypeScript | 5+ | Strict mode, no `any` |
-| **Router** | Expo Router | 4+ | File-based, type-safe, deep-link ready |
+| **Router** | Expo Router | SDK-bundled | File-based, type-safe, deep-link ready; forked from React Navigation in SDK 56 (don't import `@react-navigation/*` in app code) |
 | **State (client)** | Zustand | 5+ | Same as frontend standards |
 | **State (server)** | TanStack Query | 5+ | Same as frontend standards |
 | **Styling** | NativeWind | 4+ | TailwindCSS utility classes for RN |
@@ -163,7 +163,7 @@ Identical philosophy to the frontend and backend standards. Business logic drive
 │   ├── types/
 │   │   └── common.types.ts
 │   └── constants/
-│       └── messages.ts              # Spanish UI strings
+│       └── messages.ts              # UI strings
 │
 ├── infrastructure/
 │   ├── api/
@@ -465,7 +465,7 @@ httpClient.interceptors.response.use(
       await secureStorage.clearToken();
       // Emit an event or use an auth store to navigate to login
     }
-    const message = error.response?.data?.message ?? 'Error de conexión';
+    const message = error.response?.data?.message ?? 'Connection error';
     return Promise.reject(new Error(message));
   },
 );
@@ -811,9 +811,9 @@ export default function AppLayout() {
 
   return (
     <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="dashboard"  options={{ title: 'Inicio' }} />
-      <Tabs.Screen name="sales"      options={{ title: 'Ventas' }} />
-      <Tabs.Screen name="inventory"  options={{ title: 'Inventario' }} />
+      <Tabs.Screen name="dashboard"  options={{ title: 'Home' }} />
+      <Tabs.Screen name="sales"      options={{ title: 'Sales' }} />
+      <Tabs.Screen name="inventory"  options={{ title: 'Inventory' }} />
     </Tabs>
   );
 }
@@ -955,7 +955,7 @@ import type { CartItem } from '@/modules/sales/quotes/cart/domain/entities/cart-
 const mockItem: CartItem = {
   id: 'item-1',
   productId: 'prod-1',
-  productName: 'Producto Test',
+  productName: 'Test Product',
   quantity: 2,
   unitPrice: 50,
 };
@@ -1003,7 +1003,7 @@ import type { CartItem } from '@/modules/sales/quotes/cart/domain/entities/cart-
 const mockItem: CartItem = {
   id: '1',
   productId: 'p1',
-  productName: 'Producto Test',
+  productName: 'Test Product',
   quantity: 2,
   unitPrice: 50,
 };
@@ -1011,14 +1011,14 @@ const mockItem: CartItem = {
 describe('CartItemComponent', () => {
   it('renders product name and total price', () => {
     render(<CartItemComponent item={mockItem} onRemove={jest.fn()} />);
-    expect(screen.getByText('Producto Test')).toBeTruthy();
+    expect(screen.getByText('Test Product')).toBeTruthy();
     expect(screen.getByText('$100.00')).toBeTruthy();
   });
 
   it('calls onRemove with the item id when delete is pressed', () => {
     const onRemove = jest.fn();
     render(<CartItemComponent item={mockItem} onRemove={onRemove} />);
-    fireEvent.press(screen.getByAccessibilityHint('Eliminar del carrito'));
+    fireEvent.press(screen.getByAccessibilityHint('Remove from cart'));
     expect(onRemove).toHaveBeenCalledWith('1');
   });
 });
@@ -1058,12 +1058,12 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <View className="flex-1 items-center justify-center p-6 bg-white dark:bg-slate-950">
-          <Text variant="h3" className="text-center mb-2">Algo salió mal</Text>
+          <Text variant="h3" className="text-center mb-2">Something went wrong</Text>
           <Text variant="body" className="text-center text-slate-500 mb-6">
-            Por favor, intenta recargar la aplicación.
+            Please reload the app.
           </Text>
           <Button onPress={() => this.setState({ hasError: false })}>
-            Reintentar
+            Retry
           </Button>
         </View>
       );
@@ -1075,7 +1075,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
 ### User-Visible Error Messages
 
-Map domain failures to Spanish strings in a dedicated mapper. Never expose raw error messages to the UI.
+Map domain failures to English strings in a dedicated mapper. Never expose raw error messages to the UI.
 
 ```typescript
 // modules/sales/quotes/cart/application/mappers/cart-failure.mapper.ts
@@ -1085,11 +1085,11 @@ import { MESSAGES } from '@/shared/constants/messages';
 export const mapCartFailureToMessage = (failure: CartFailure): string => {
   switch (failure.type) {
     case 'INVALID_QUANTITY':
-      return 'La cantidad debe ser mayor a cero';
+      return 'Quantity must be greater than zero';
     case 'NOT_FOUND':
-      return `El artículo ${failure.id} no fue encontrado`;
+      return `Item ${failure.id} not found`;
     case 'CART_LIMIT_EXCEEDED':
-      return `El carrito no puede tener más de ${failure.maxItems} artículos`;
+      return `Cart cannot contain more than ${failure.maxItems} items`;
     case 'NETWORK_ERROR':
       return MESSAGES.ERROR.GENERIC;
   }
@@ -1129,31 +1129,31 @@ export const mapCartFailureToMessage = (failure: CartFailure): string => {
 
 ## Localization
 
-All user-visible text must be in Spanish. Code, logs, comments, and git commits stay in English — identical to the frontend and backend standards.
+All user-visible text must be in English. Code, logs, comments, and git commits stay in English — identical to the frontend and backend standards.
 
 ```typescript
 // shared/constants/messages.ts
 export const MESSAGES = {
   ERROR: {
-    GENERIC:        'Ha ocurrido un error. Por favor, intenta de nuevo.',
-    NOT_FOUND:      'El recurso solicitado no fue encontrado.',
-    UNAUTHORIZED:   'No tienes permisos para realizar esta acción.',
-    NETWORK:        'Sin conexión. Verifica tu red e intenta de nuevo.',
+    GENERIC:        'Something went wrong. Please try again.',
+    NOT_FOUND:      'The requested resource was not found.',
+    UNAUTHORIZED:   'You do not have permission to perform this action.',
+    NETWORK:        'No connection. Check your network and try again.',
   },
   LOADING: {
-    DEFAULT:   'Cargando...',
-    SAVING:    'Guardando...',
-    PROCESSING: 'Procesando...',
+    DEFAULT:   'Loading...',
+    SAVING:    'Saving...',
+    PROCESSING: 'Processing...',
   },
   CART: {
-    EMPTY:    'Tu carrito está vacío.',
-    CHECKOUT: 'Finalizar compra',
-    REMOVE:   'Eliminar del carrito',
-    ADD:      'Agregar al carrito',
+    EMPTY:    'Your cart is empty.',
+    CHECKOUT: 'Checkout',
+    REMOVE:   'Remove from cart',
+    ADD:      'Add to cart',
   },
   AUTH: {
-    LOGIN:   'Iniciar sesión',
-    LOGOUT:  'Cerrar sesión',
+    LOGIN:   'Sign in',
+    LOGOUT:  'Sign out',
   },
 } as const;
 ```
@@ -1184,7 +1184,7 @@ const config: ExpoConfig = {
     supportsTablet: false,
     bundleIdentifier: 'com.yourcompany.yourapp',
     infoPlist: {
-      NSCameraUsageDescription: 'Se usa para escanear códigos de barras.',
+      NSCameraUsageDescription: 'Used to scan barcodes.',
     },
   },
   android: {
@@ -1216,18 +1216,20 @@ export default config;
 
 ## package.json Reference
 
+> Expo-managed packages (`expo`, `expo-*`, `expo-router`, and Expo-aligned RN libraries) must be pinned to **SDK 56-compatible** versions. Don't hand-edit them — run `npx expo install <pkg>` and Expo resolves the correct version for the SDK. The pins below are illustrative for SDK 56.
+
 ```json
 {
   "dependencies": {
-    "expo": "~53.0.0",
-    "expo-router": "~4.0.0",
+    "expo": "~56.0.0",
+    "expo-router": "~6.0.0",
     "expo-font": "~12.0.0",
     "expo-splash-screen": "~0.27.0",
     "expo-secure-store": "~13.0.0",
     "expo-image": "~2.0.0",
     "expo-screen-capture": "~5.0.0",
-    "react": "18.3.1",
-    "react-native": "0.77.0",
+    "react": "19.2.0",
+    "react-native": "0.85.0",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
     "react-native-gesture-handler": "~2.20.0",
@@ -1280,7 +1282,7 @@ export default config;
 - [ ] Zustand store delegating to use cases
 - [ ] TanStack Query hooks for server state
 - [ ] Repository implementation with Zod parsing on all API responses
-- [ ] Domain failure mapper to Spanish strings
+- [ ] Domain failure mapper to English strings
 - [ ] Screen using selectors (`useStore((s) => s.field)`)
 - [ ] Shared `Screen`, `Text`, `Button` primitives — no raw RN components in screens
 - [ ] Unit tests for use cases and value objects
@@ -1292,5 +1294,5 @@ export default config;
 - [ ] No raw `console.log` in production code
 - [ ] `FlatList` or `FlashList` for every dynamic list
 - [ ] `accessibilityRole` and `accessibilityLabel` on all interactive elements
-- [ ] All user-visible strings in `MESSAGES` constants (Spanish)
+- [ ] All user-visible strings in `MESSAGES` constants
 - [ ] No API keys or secrets in client code
