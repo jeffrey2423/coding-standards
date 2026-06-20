@@ -6,13 +6,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06
+
 ### Added
+- **Backend for Frontend (BFF) standard** (`backend/architecture/bff-standard.md`) — opt-in distributed-architecture doc positioning the BFF as a selectable, client-specific aggregation layer, with explicit boundaries against the API Gateway, the Public API Facade, and microservices.
+- **Distributed-architecture decision map** (`backend/architecture/choosing-distributed-architecture.md`) — a "what to pick & when" entry point (modular monolith vs microservices; gateway vs public facade vs BFF). Always installed with `--backend`.
+- Installer: `bff` selectable architecture id (opt-in, in `--all` / interactive defaults).
 - Automated GitHub Releases: when `package.json`'s version changes, the publish workflow creates the `vX.Y.Z` tag and a release with notes from `CHANGELOG.md`.
 - Dependabot config keeping GitHub Actions and npm dependencies current, with auto-merge for passing patch/minor updates (major bumps flagged for manual review).
 - `CODEOWNERS` requesting the maintainer as reviewer on every PR.
 - Branch protection on `main` (PR-only, CI-gated, force-push/deletion blocked) documented in the README.
 
 ### Changed
+- `public-api-facade.md` now explicitly separates the **API Gateway** (foundational infrastructure) from the **Public API Facade** (opt-in, for third parties), so they are not conflated.
+- `frontend-architecture.md` documents where cross-context composition belongs (frontend stitching vs a server-side BFF).
 - Bumped `actions/checkout` to v7 and `actions/setup-node` to v6.
 
 ## [2.0.1] - 2026-06
@@ -46,6 +53,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.1.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.0
 [2.0.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.0.1
 [2.0.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.0.0
 [1.0.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v1.0.0
