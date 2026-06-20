@@ -1,4 +1,11 @@
-# Technical Preferences - UX Configuration
+---
+title: Design System & UX
+platform: web
+load_when: "UI/visual work — colors, typography, spacing, accessibility, performance targets."
+updated: 2026-06
+---
+
+# Design System & UX
 
 ## Project Setup Configuration
 Based on Frontend Development Standards and Clean Architecture Implementation

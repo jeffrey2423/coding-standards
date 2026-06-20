@@ -1,3 +1,10 @@
+---
+title: PostgreSQL Database Conventions
+platform: backend
+load_when: "Designing schema or EF Core mappings — naming, keys, indexes, snake_case."
+updated: 2026-06
+---
+
 # PostgreSQL Database Conventions
 
 ## 1. PostgreSQL Database Conventions

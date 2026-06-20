@@ -1,19 +1,29 @@
 {
   "name": "@jeffrey2423/coding-standards",
-  "version": "1.0.0",
-  "description": "Copy coding standards and architecture guides into your project",
+  "version": "2.0.0",
+  "description": "Pick and copy modern, AI-ready coding standards and architecture guides into your project",
   "license": "MIT",
   "bin": {
     "coding-standards": "bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "files": [
     "bin/",
     "standards/"
   ],
+  "dependencies": {
+    "@clack/prompts": "^0.7.0"
+  },
   "keywords": [
     "coding-standards",
     "architecture",
     "clean-architecture",
-    "ddd"
+    "ddd",
+    "microservices",
+    "microfrontends",
+    "ai-assisted",
+    "agents"
   ]
 }
