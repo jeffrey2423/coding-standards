@@ -161,9 +161,27 @@ function pruneForeignReferences(copied) {
     const kept = lines.filter((line) => !lineLinksToForeignDoc(line, dirRel));
     if (kept.length === lines.length) continue; // nothing pruned
 
-    const text = dropOrphanTableHeaders(kept).join("\n").replace(/\n{3,}/g, "\n\n");
+    const text = dropEmptyHeadings(dropOrphanTableHeaders(kept)).join("\n").replace(/\n{3,}/g, "\n\n");
     fs.writeFileSync(abs, text);
   }
+}
+
+// Drop a heading whose section became empty after pruning (no content before the
+// next heading of the same or higher level, or before EOF). A heading followed by
+// a deeper subheading is kept — it still has subsections.
+function dropEmptyHeadings(lines) {
+  const level = (s) => { const m = s.match(/^(#{1,6})\s/); return m ? m[1].length : 0; };
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const lvl = level(lines[i]);
+    if (lvl > 0) {
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim() === "") j++;
+      if (j >= lines.length || (level(lines[j]) > 0 && level(lines[j]) <= lvl)) continue; // empty section → drop heading
+    }
+    out.push(lines[i]);
+  }
+  return out;
 }
 
 // Drop a Markdown table header + separator left with no data rows after pruning.
