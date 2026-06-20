@@ -1,6 +1,14 @@
+---
+title: React Native Development Standards
+platform: mobile
+track: react-native
+load_when: "Building a React Native app — Expo, Zustand, Expo Router, NativeWind."
+updated: 2026-06
+---
+
 # Mobile React Native Development Standards
 
-> **Note**: For shared architectural principles (Clean Architecture, DDD, design philosophy), refer to [architecture-patterns.md](./architecture-patterns.md). For design system (colors, typography, UX), refer to [technical-preferences-ux.md](./technical-preferences-ux.md). React Native shares the same core architecture philosophy as the frontend standards in [frontend-standards.md](./frontend-standards.md) — adapted for native mobile.
+> **Note**: For shared architectural principles (Clean Architecture, DDD), refer to [`../../core/clean-architecture-ddd.md`](../../core/clean-architecture-ddd.md). For design system (colors, typography, UX), refer to [`../../web/_base/design-system-ux.md`](../../web/_base/design-system-ux.md). React Native shares the same core architecture philosophy as the web frontend standards in [`../../web/_base/frontend-standards.md`](../../web/_base/frontend-standards.md) — adapted for native mobile.
 
 ---
 

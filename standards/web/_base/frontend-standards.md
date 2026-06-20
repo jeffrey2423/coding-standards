@@ -1,3 +1,10 @@
+---
+title: Frontend Development Standards
+platform: web
+load_when: "Any web UI implementation — components, hooks, forms, state, testing."
+updated: 2026-06
+---
+
 # Frontend Development Standards
 
 ## Resumen

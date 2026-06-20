@@ -1,6 +1,14 @@
+---
+title: Flutter Development Standards
+platform: mobile
+track: flutter
+load_when: "Building a Flutter app — Riverpod, GoRouter, Clean Architecture, Material 3."
+updated: 2026-06
+---
+
 # Mobile Flutter Development Standards
 
-> **Note**: For shared architectural principles (Clean Architecture, DDD, design philosophy), refer to [architecture-patterns.md](./architecture-patterns.md). For design system (colors, typography, UX), refer to [technical-preferences-ux.md](./technical-preferences-ux.md).
+> **Note**: For shared architectural principles (Clean Architecture, DDD), refer to [`../../core/clean-architecture-ddd.md`](../../core/clean-architecture-ddd.md). For design system (colors, typography, UX), refer to [`../../web/_base/design-system-ux.md`](../../web/_base/design-system-ux.md).
 
 ---
 

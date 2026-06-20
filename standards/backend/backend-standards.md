@@ -1,6 +1,13 @@
+---
+title: Backend Development Standards
+platform: backend
+load_when: "Any backend/.NET implementation — endpoints, handlers, EF Core, validation, testing."
+updated: 2026-06
+---
+
 # Backend Development Standards
 
-> **Note**: For architecture patterns and principles (Clean Architecture, DDD, folder structure), see [architecture-patterns.md](./architecture-patterns.md)
+> **Note**: For architecture principles (Clean Architecture, DDD), see [`../core/clean-architecture-ddd.md`](../core/clean-architecture-ddd.md). For microservice structure and the distributed-architecture docs, see [`architecture/microservice-anatomy.md`](architecture/microservice-anatomy.md).
 
 ## Technology Stack Standards
 
