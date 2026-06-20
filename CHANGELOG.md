@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-06
+
+### Fixed
+- **Clean pruning of decision tables (closes #12).** When a partial install pruned a cross-reference, it could leave orphaned phrasing — most visibly the web-track table's "Combined" row reading "both docs above" after the rows it pointed to were removed. The `Combined` row now links to **both** tracks it combines, so it prunes cleanly when either is absent. Decision tables now prune to the user's selection with no dangling references.
+
+### Changed
+- Installer pruning also removes a **section heading left empty** after its content was pruned (in addition to the existing empty-table and blank-line cleanup), so partial installs never show a bare heading with nothing under it.
+- Documented the cross-reference authoring convention in `CONTRIBUTING.md`: cross-doc links go on their own self-contained line, never as relative references ("above"/"below"), so pruning stays clean.
+
 ## [2.3.1] - 2026-06
 
 ### Fixed
@@ -92,6 +101,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.4.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.4.0
 [2.3.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.1
 [2.3.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.0
 [2.2.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.1
