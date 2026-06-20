@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-06
+
+### Added
+- **Self-contained installs.** The installer now prunes cross-references to standards that weren't selected: any line linking to a non-installed `.md` is removed, and tables left without data rows are dropped. A partial install no longer carries broken links or pointers to standards that aren't present.
+
+### Changed
+- **`frontend-standards.md` §13 is now locale-agnostic.** Replaced the "user-facing text must be Spanish" mandate with an i18n-based rule: user-facing text follows the product's configured locale via the i18n layer; code, identifiers, comments, and docs are always English. Examples use English message keys.
+- Translated the remaining Spanish string literals in `frontend-standards.md` to English — the standards documentation is now fully English throughout.
+
 ## [2.2.1] - 2026-06
 
 ### Docs
@@ -78,6 +87,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.3.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.0
 [2.2.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.1
 [2.2.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.0
 [2.1.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.1
