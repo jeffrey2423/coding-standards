@@ -48,6 +48,11 @@ node /path/to/coding-standards/bin/cli.js --help
 4. **Open-source only:** any library you recommend MUST use a permissive OSS license (MIT, Apache-2.0, BSD, ISC, PostgreSQL). No commercial / revenue-gated / AGPL dependencies. See `standards/backend/technology-stack.md`.
 5. If you add a new pack/track, wire it into `bin/cli.js` (the `resolveSources` map and the prompts).
 6. Keep facts current and **verifiable** — prefer linking official docs over asserting versions.
+7. **Cross-references must survive partial installs.** A user installs only a subset of standards, and the installer prunes every line that links to a standard they didn't select. So:
+   - Put each cross-doc link on its **own self-contained line** — a list item or a single table row. When that line is pruned, nothing else should break.
+   - **Never use relative references** like "see the table above", "both docs above", or "the standard below" — they orphan as soon as the thing they point to is pruned. Name the target with its own link instead.
+   - A row that depends on **multiple** other standards should link to **all** of them, so it prunes when any is absent (e.g. a "Combined" option linking to both tracks it combines).
+   - Decision/comparison tables prune to the user's selection; keep each row independent of its siblings.
 
 ## Pull requests
 

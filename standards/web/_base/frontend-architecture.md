@@ -32,7 +32,7 @@ One cohesive app · one (or few) teams · small/medium scope?
 | **SPA** | One cohesive app, single deployable, single/few teams | [`web/spa/spa-standard.md`](../spa/spa-standard.md) |
 | **Module Federation** | **Homogeneous React**, capabilities reused across products, **license-gated runtime composition**. The 2026 de-facto standard for scalable React MFEs. | [`web/microfrontends/module-federation-standard.md`](../microfrontends/module-federation-standard.md) |
 | **Single-SPA** | **Mixed frameworks** or hard per-module lifecycle/CSS isolation; a dedicated top-level orchestrator | [`web/single-spa/single-spa-standard.md`](../single-spa/single-spa-standard.md) |
-| **Combined** | Single-SPA orchestrates independently-deployed apps **and** Module Federation shares code/modules between them | both docs above |
+| **Combined** | Single-SPA orchestrates independently-deployed apps **and** Module Federation shares code/modules between them | [`single-spa-standard.md`](../single-spa/single-spa-standard.md) + [`module-federation-standard.md`](../microfrontends/module-federation-standard.md) |
 
 > **They are not mutually exclusive.** Single-SPA orchestrates *which app/route is active*; Module Federation shares *code/modules at runtime*. A large platform can use Single-SPA as the shell and Module Federation for cross-app sharing. Module Federation alone is enough for a homogeneous-React platform (single shell, products as layouts, capabilities as remotes).
 
