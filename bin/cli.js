@@ -32,6 +32,7 @@ const ARCH_DOCS = [
   { id: "multitenancy", file: "multitenancy.md", label: "Multi-tenancy (RLS, tenant catalog)" },
   { id: "events", file: "event-driven.md", label: "Event-driven (outbox, sagas)" },
   { id: "api", file: "public-api-facade.md", label: "Public API facade (gateway, webhooks)" },
+  { id: "bff", file: "bff-standard.md", label: "Backend for Frontend (BFF)" },
   { id: "shared", file: "shared-vs-owned.md", label: "Shared vs owned components" },
 ];
 
@@ -47,6 +48,8 @@ function resolveSources(sel) {
     for (const f of ["backend-standards.md", "technology-stack.md", "database-conventions.md"]) {
       sources.push({ file: path.join("backend", f) });
     }
+    // always-included distributed-architecture decision guide (the "what to pick & when" map)
+    sources.push({ file: path.join("backend", "architecture", "choosing-distributed-architecture.md") });
     // opt-in architecture docs
     for (const a of ARCH_DOCS) {
       if (sel.arch.includes(a.id)) {

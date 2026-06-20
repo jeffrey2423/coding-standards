@@ -10,6 +10,12 @@ updated: 2026-06
 
 The public layer of a platform. **Contracts are the product**: OpenAPI for sync, AsyncAPI for events. Their versioning discipline is what makes a platform (vs an app) — third parties depend on them.
 
+> **Two separate decisions live in this doc — don't conflate them** (see [`choosing-distributed-architecture.md`](choosing-distributed-architecture.md)):
+> - **API Gateway** — *foundational infrastructure.* Present as soon as you have more than one service a client must reach. Not optional in a distributed system.
+> - **Public API Facade** (the product: portal, webhooks, public versioned contracts) — *opt-in.* You build this **only when third parties integrate** with the platform. If your only consumer is your own UI, you need the gateway, not the facade product.
+>
+> Neither of these is a **Backend for Frontend** — that's a per-client aggregation layer; see [`bff-standard.md`](bff-standard.md).
+
 ## Pieces
 
 - **API Gateway** — single entry point for inbound HTTP (`api.org.com`).
