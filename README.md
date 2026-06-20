@@ -23,8 +23,8 @@ npx @jeffrey2423/coding-standards
 ```
 ? What are you building?        ◉ Backend / API (.NET)   ◉ Frontend Web   ◯ Mobile
 ? Web architecture:             ● Microfrontends (Module Federation)
-? Backend — distributed arch:   ◉ Multi-tenancy  ◉ Event-driven  ◉ Public API facade ...
-✓ Copied 14 files to coding-standards/
+? Backend — distributed arch:   ◉ Multi-tenancy  ◉ Event-driven  ◉ Public API facade  ◉ BFF ...
+✓ Copied 19 files to coding-standards/
 ✓ Generated coding-standards/INDEX.md
 ```
 
