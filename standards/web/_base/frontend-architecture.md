@@ -21,6 +21,8 @@ These are **independent options**, not a default-plus-exceptions. Pick by need:
 
 Default to **SPA** until a concrete need justifies microfrontend complexity. Don't adopt it speculatively.
 
+> **Talking to the backend.** Each module/feature calls its own context's API through the shared gateway. When one screen must aggregate **several** contexts, stitch read-only data in the frontend (parallel TanStack Query calls); reach for a server-side [Backend for Frontend](../../backend/architecture/bff-standard.md) only when that stitching gets chatty or leaks too much backend shape into the UI.
+
 ## Folder structure
 
 Organize by **business module → domain → feature**, with Clean Architecture layers inside each feature:

@@ -69,11 +69,13 @@ standards/
 │   ├── backend-standards.md
 │   ├── technology-stack.md
 │   ├── database-conventions.md
-│   └── architecture/           # opt-in distributed-architecture docs
+│   └── architecture/           # distributed-architecture docs
+│       ├── choosing-distributed-architecture.md   # decision map: what to pick & when
 │       ├── microservice-anatomy.md
 │       ├── multitenancy.md
 │       ├── event-driven.md
 │       ├── public-api-facade.md
+│       ├── bff-standard.md
 │       └── shared-vs-owned.md
 ├── web/
 │   ├── _base/                  # frontend architecture, stack, design system
@@ -100,10 +102,12 @@ Flutter (Riverpod 3 · GoRouter · Material 3) · React Native (Expo SDK 53+ · 
 
 ## Architecture highlights
 
+- **Pick by need, not by default** — `architecture/choosing-distributed-architecture.md` is the decision map: modular monolith vs microservices, and which edge layer (gateway / public facade / BFF) each problem actually calls for. The gateway is foundational; the public facade and BFF are opt-in and answer **different** questions.
 - **Clean Architecture + DDD** everywhere; strict inward dependency rule.
 - **Multi-tenancy**: hybrid bridge model — pooled + PostgreSQL RLS by default, selective silo, central tenant catalog.
 - **Event-driven**: transactional Outbox, idempotent consumers, sagas with compensation, correlation IDs.
-- **Public API facade**: contracts as product — OpenAPI 3.1 + AsyncAPI 3.0, Standard Webhooks (HMAC), OAuth 2.1, Problem Details (RFC 9457), rigorous versioning. Your own UI uses the public API — no private APIs.
+- **Public API facade** (opt-in, for third parties): contracts as product — OpenAPI 3.1 + AsyncAPI 3.0, Standard Webhooks (HMAC), OAuth 2.1, Problem Details (RFC 9457), rigorous versioning.
+- **Backend for Frontend** (opt-in): thin, client-specific aggregation layer — owned by a frontend team, no domain logic, used only when one experience must compose multiple contexts server-side.
 - **Microfrontends**: products as router layouts, capabilities as remote MFEs, enabled per license without redeploy.
 
 ## Key principles
