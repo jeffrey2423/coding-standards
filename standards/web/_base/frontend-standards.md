@@ -7,36 +7,36 @@ updated: 2026-06
 
 # Frontend Development Standards
 
-## Resumen
+## Summary
 
-Este documento define los estándares de desarrollo frontend para aplicaciones empresariales usando **Vite** como bundler, **TanStack Router** para enrutamiento type-safe, **Zustand** para estado global, y **Clean Architecture** con estructura modular preparada para microfrontends.
+This document defines the frontend development standards for enterprise applications using **Vite** as the bundler, **TanStack Router** for type-safe routing, **Zustand** for global state, and **Clean Architecture** with a modular structure ready for microfrontends.
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
-1. [Principios de Arquitectura](#1-principios-de-arquitectura)
-2. [Stack Tecnológico](#2-stack-tecnológico)
-3. [Convenciones de Routing](#3-convenciones-de-routing)
-4. [Organización de Archivos](#4-organización-de-archivos)
-5. [Estándares de Componentes](#5-estándares-de-componentes)
-6. [Patrones de Estado](#6-patrones-de-estado)
-7. [Estándares de Testing](#7-estándares-de-testing)
-8. [Accesibilidad](#8-accesibilidad)
-9. [Rendimiento](#9-rendimiento)
-10. [Seguridad](#10-seguridad)
-11. [Manejo de Errores](#11-manejo-de-errores)
+1. [Architecture Principles](#1-architecture-principles)
+2. [Technology Stack](#2-technology-stack)
+3. [Routing Conventions](#3-routing-conventions)
+4. [File Organization](#4-file-organization)
+5. [Component Standards](#5-component-standards)
+6. [State Patterns](#6-state-patterns)
+7. [Testing Standards](#7-testing-standards)
+8. [Accessibility](#8-accessibility)
+9. [Performance](#9-performance)
+10. [Security](#10-security)
+11. [Error Handling](#11-error-handling)
 12. [Progressive Web App](#12-progressive-web-app)
-13. [Estándares de Idioma](#13-estándares-de-idioma)
-14. [Consideraciones Generales](#14-consideraciones-generales)
-15. [Configuración Base](#15-configuración-base)
-16. [Checklist de Implementación](#16-checklist-de-implementación)
+13. [Language Standards](#13-language-standards)
+14. [General Considerations](#14-general-considerations)
+15. [Base Configuration](#15-base-configuration)
+16. [Implementation Checklist](#16-implementation-checklist)
 
 ---
 
-## 1. Principios de Arquitectura
+## 1. Architecture Principles
 
-### 1.1 Implementación de Clean Architecture
+### 1.1 Clean Architecture Implementation
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -63,91 +63,82 @@ Este documento define los estándares de desarrollo frontend para aplicaciones e
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-| Capa | Responsabilidad | Contenido |
+| Layer | Responsibility | Contents |
 |------|-----------------|-----------|
-| **Domain** | Reglas de negocio puras | Entities, value objects, interfaces de repositorios |
-| **Application** | Orquestación de casos de uso | Use cases, hooks, stores Zustand |
-| **Infrastructure** | Implementaciones externas | API clients, repositorios concretos, adapters |
-| **Presentation** | Interfaz de usuario | Componentes React, páginas, estilos |
+| **Domain** | Pure business rules | Entities, value objects, repository interfaces |
+| **Application** | Use case orchestration | Use cases, hooks, Zustand stores |
+| **Infrastructure** | External implementations | API clients, concrete repositories, adapters |
+| **Presentation** | User interface | React components, pages, styles |
 
-### 1.2 Reglas de Dependencia
+### 1.2 Dependency Rules
 
-- Las capas internas **NO deben conocer** las capas externas
-- Las dependencias apuntan hacia adentro (de externo a interno)
-- Usar inversión de dependencias para concerns externos
-- Domain layer no importa nada de otras capas
+- Inner layers **must NOT know about** outer layers
+- Dependencies point inward (from outer to inner)
+- Use dependency inversion for external concerns
+- The domain layer imports nothing from other layers
 
 ---
 
-## 2. Stack Tecnológico
+## 2. Technology Stack
 
-### 2.1 Tecnologías Core
+### 2.1 Core Technologies
 
-| Categoría | Tecnología | Versión | Notas |
+| Category | Technology | Version | Notes |
 |-----------|------------|---------|-------|
-| **Bundler** | Vite | 5+ | Build tool y dev server |
-| **Framework** | React | 18+ | Functional components y hooks |
-| **Router** | TanStack Router | 1+ | File-based routing con type-safety |
-| **Lenguaje** | TypeScript | 5+ | Strict mode, sin `any` |
-| **Estilos** | TailwindCSS | 4+ | Utility-first CSS |
-| **Componentes** | shadcn/ui + Radix UI | - | Base de componentes |
-| **Estado** | Zustand | 4+ | Estado global por feature |
-| **Data Fetching** | TanStack Query | 5+ | Cache y sincronización |
+| **Bundler** | Vite | 7+ | Build tool and dev server |
+| **Framework** | React | 19+ | Functional components and hooks |
+| **Router** | TanStack Router | 1+ | File-based routing with type-safety |
+| **Language** | TypeScript | 5+ | Strict mode, no `any` |
+| **Styling** | TailwindCSS | 4+ | Utility-first CSS |
+| **Components** | shadcn/ui + Radix UI | - | Component foundation |
+| **State** | Zustand | 5+ | Global state per feature |
+| **Data Fetching** | TanStack Query | 5+ | Cache and synchronization |
 
-### 2.2 Reglas de Selección de Framework
+### 2.2 Framework Selection Rules
 
-| Escenario | Framework | Razón |
-|-----------|-----------|-------|
-| **Default** | Vite + TanStack Router | Mejor DX, type-safety, preparado para microfrontends |
-| **MFE (Default)** | Vite + Single-SPA | Aislamiento completo, CSS lifecycle, error boundaries built-in |
-| **Módulo Federable** | Vite + Module Federation | SOLO para módulos transversales explícitamente marcados |
+The frontend stack is the same across every track; what changes is **composition**. Pick the track by need — see [`frontend-architecture.md`](frontend-architecture.md) for the full decision tree (this document does not redefine it).
 
-### 2.3 Regla Crítica: Single-SPA vs Module Federation
+| Scenario | Choice | Reason |
+|---|---|---|
+| **Default** | Vite + TanStack Router (SPA) | Best DX, type-safety, single deployable for one cohesive app |
+| **Microfrontends — homogeneous React** | Module Federation 2.0 (`@module-federation/enhanced`) | 2026 de-facto standard: singleton sharing, end-to-end typing, license-gated runtime composition |
+| **Microfrontends — mixed frameworks / hard isolation** | Single-SPA | Framework-agnostic orchestration, isolated lifecycle (bootstrap/mount/unmount), CSS isolation |
+| **Both** | Single-SPA + Module Federation | Single-SPA orchestrates apps; Module Federation shares code between them |
 
-> ⚠️ **IMPORTANTE**: Por defecto, todos los microfrontends usan **Single-SPA**. Module Federation se usa **SOLO** cuando el ingeniero define explícitamente que un módulo debe ser compartido/federable.
+### 2.3 Microfrontends: Module Federation and Single-SPA
 
-| Tipo | Tecnología | Uso |
-|------|------------|-----|
-| **MFE de Negocio** | `vite-plugin-single-spa` + `single-spa-react` | ✅ DEFAULT - finance, hr, inventory, etc. |
-| **Módulo Compartido** | `@module-federation/vite` | ⚠️ SOLO cuando explícitamente requerido |
+> Microfrontends are **need-driven**, not a default. Don't adopt them speculatively (industry adoption had a documented "reality check"). For a homogeneous React platform, **Module Federation** is the default; **Single-SPA** is the orchestrator when you have mixed frameworks or need hard lifecycle isolation. They are **not mutually exclusive** — Single-SPA orchestrates which app is active; Module Federation shares code/modules at runtime, and a large platform can use both.
 
-**Dependencias Single-SPA (DEFAULT):**
-```bash
-npm install single-spa-react
-npm install vite-plugin-single-spa --save-dev
-```
+| Approach | Technology | Use |
+|---|---|---|
+| **Homogeneous React MFEs** | `@module-federation/enhanced` (+ `@module-federation/vite`) | ✅ Default for React microfrontend platforms — single shell, products as layouts, capabilities as remotes |
+| **Mixed-framework / isolated MFEs** | `vite-plugin-single-spa` + `single-spa-react` | Framework coexistence, explicit lifecycle, CSS isolation |
+| **Shared modules across apps** | Module Federation layered onto a Single-SPA shell | Cross-app code sharing without duplicating dependencies |
 
-**Beneficios de Single-SPA:**
-- CSS isolation automático via `cssLifecycleFactory`
-- Error boundaries built-in
-- Lifecycle completo (bootstrap, mount, unmount)
-- Mejor hot reload
-- Menor complejidad de configuración
+The full track decision (SPA vs Module Federation vs Single-SPA vs combined) and its backend implications live in [`frontend-architecture.md`](frontend-architecture.md). See also [`../microfrontends/module-federation-standard.md`](../microfrontends/module-federation-standard.md) and [`../single-spa/single-spa-standard.md`](../single-spa/single-spa-standard.md) for the per-track standards.
 
-Ver `vite-config-standard.md` para configuración detallada.
+### 2.4 Development Tools
 
-### 2.3 Herramientas de Desarrollo
-
-| Herramienta | Propósito |
+| Tool | Purpose |
 |-------------|-----------|
-| **Vite** | Build system y dev server |
-| **Vitest** | Unit e integration testing |
+| **Vite** | Build system and dev server |
+| **Vitest** | Unit and integration testing |
 | **React Testing Library** | Component testing |
-| **MSW** | API mocking para tests |
-| **ESLint + Prettier** | Code quality y formatting |
+| **MSW** | API mocking for tests |
+| **ESLint + Prettier** | Code quality and formatting |
 | **TypeScript** | Type checking |
 
 ---
 
-## 3. Convenciones de Routing
+## 3. Routing Conventions
 
-TanStack Router usa prefijos especiales en nombres de archivo para definir comportamientos.
+TanStack Router uses special prefixes in file names to define behaviors.
 
-### 3.1 Prefijo `_` (Underscore) - Pathless Layout Routes
+### 3.1 `_` (Underscore) Prefix - Pathless Layout Routes
 
-**Propósito:** Agrupar rutas bajo un layout compartido **SIN agregar segmentos a la URL**.
+**Purpose:** Group routes under a shared layout **WITHOUT adding segments to the URL**.
 
-#### ❌ El Problema (sin `_`)
+#### ❌ The Problem (without `_`)
 
 ```
 routes/
@@ -159,27 +150,27 @@ routes/
 │   └── orders.tsx         → URL: /app/orders ❌
 ```
 
-**Resultado:** Las URLs incluyen el nombre de la carpeta, lo cual es indeseable.
+**Result:** URLs include the folder name, which is undesirable.
 
-#### ✅ La Solución (con `_`)
+#### ✅ The Solution (with `_`)
 
 ```
 routes/
 ├── __root.tsx
-├── _auth.tsx              → NO agrega nada a la URL (solo layout)
+├── _auth.tsx              → Adds NOTHING to the URL (layout only)
 ├── _auth/
 │   └── login.tsx          → URL: /login ✅
 │
-├── _app.tsx               → NO agrega nada a la URL (solo layout)
+├── _app.tsx               → Adds NOTHING to the URL (layout only)
 ├── _app/
 │   ├── dashboard.tsx      → URL: /dashboard ✅
 │   └── orders.tsx         → URL: /orders ✅
 ```
 
-#### Ejemplo de Implementación
+#### Implementation Example
 
 ```typescript
-// routes/_app.tsx - Layout protegido
+// routes/_app.tsx - Protected layout
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { Sidebar, TopNav } from '@/shared/components/layout';
 import { useAuthStore } from '@/modules/users/authentication/login/application/store';
@@ -209,9 +200,9 @@ function AppLayout() {
 }
 ```
 
-### 3.2 Prefijo `.` (Punto) - Flat Routing
+### 3.2 `.` (Dot) Prefix - Flat Routing
 
-**Propósito:** Definir rutas anidadas **sin crear carpetas**.
+**Purpose:** Define nested routes **without creating folders**.
 
 ```
 routes/
@@ -221,29 +212,29 @@ routes/
 ├── orders.$orderId.edit.tsx → /orders/:orderId/edit
 ```
 
-#### ¿Cuándo usar `.` vs Carpetas?
+#### When to use `.` vs Folders?
 
-| Escenario | Recomendación |
+| Scenario | Recommendation |
 |-----------|---------------|
-| Pocas rutas anidadas (2-3) | Flat con `.` |
-| Muchas rutas anidadas (4+) | Carpetas |
-| Rutas con componentes colocados | Carpetas con `-components/` |
+| Few nested routes (2-3) | Flat with `.` |
+| Many nested routes (4+) | Folders |
+| Routes with colocated components | Folders with `-components/` |
 
-### 3.3 Prefijo `-` (Guión) - Ignorar Archivos
+### 3.3 `-` (Hyphen) Prefix - Ignore Files
 
-**Propósito:** Excluir archivos/carpetas de la generación de rutas para colocación de código.
+**Purpose:** Exclude files/folders from route generation for code colocation.
 
 ```
 routes/
 ├── orders/
 │   ├── $orderId.tsx             → /orders/:orderId ✅
-│   ├── -components/             → ❌ Ignorado por el router
+│   ├── -components/             → ❌ Ignored by the router
 │   │   └── OrderHeader.tsx
-│   └── -hooks/                  → ❌ Ignorado por el router
+│   └── -hooks/                  → ❌ Ignored by the router
 │       └── useOrderCalculations.ts
 ```
 
-### 3.4 Prefijo `$` (Dólar) - Parámetros Dinámicos
+### 3.4 `$` (Dollar) Prefix - Dynamic Parameters
 
 ```typescript
 // routes/_app/orders/$orderId.tsx
@@ -254,41 +245,41 @@ export const Route = createFileRoute('/_app/orders/$orderId')({
 });
 
 function OrderDetail() {
-  const { orderId } = Route.useParams(); // Tipado automático
+  const { orderId } = Route.useParams(); // Automatically typed
   return <div>Order: {orderId}</div>;
 }
 ```
 
-### 3.5 Resumen de Prefijos
+### 3.5 Prefix Summary
 
-| Prefijo | Nombre | Efecto en URL | Uso Principal |
+| Prefix | Name | Effect on URL | Primary Use |
 |---------|--------|---------------|---------------|
-| `_` | Pathless | **No aparece** | Layouts sin path |
-| `.` | Flat | Crea anidamiento | Evitar carpetas |
-| `-` | Ignore | **No genera ruta** | Colocación de código |
-| `$` | Dynamic | Captura valor | Parámetros de URL |
-| `__` | Root | Raíz del árbol | Solo `__root.tsx` |
+| `_` | Pathless | **Does not appear** | Layouts without a path |
+| `.` | Flat | Creates nesting | Avoid folders |
+| `-` | Ignore | **Generates no route** | Code colocation |
+| `$` | Dynamic | Captures value | URL parameters |
+| `__` | Root | Root of the tree | Only `__root.tsx` |
 
 ---
 
-## 4. Organización de Archivos
+## 4. File Organization
 
-### 4.1 Estructura Enterprise (Module/Domain/Feature)
+### 4.1 Enterprise Structure (Module/Domain/Feature)
 
 ```
 src/
 ├── main.tsx                        # React entry point
 ├── router.tsx                      # TanStack Router config
-├── routeTree.gen.ts                # Auto-generado (NO EDITAR)
-├── globals.css                     # Estilos globales + Tailwind
+├── routeTree.gen.ts                # Auto-generated (DO NOT EDIT)
+├── globals.css                     # Global styles + Tailwind
 │
-├── routes/                         # 🛣️ SOLO definición de rutas
-│   ├── __root.tsx                  # Layout raíz (providers)
-│   ├── index.tsx                   # Redirect inicial
-│   ├── _auth.tsx                   # Layout público
+├── routes/                         # 🛣️ Route definitions ONLY
+│   ├── __root.tsx                  # Root layout (providers)
+│   ├── index.tsx                   # Initial redirect
+│   ├── _auth.tsx                   # Public layout
 │   ├── _auth/
 │   │   └── login.tsx
-│   ├── _app.tsx                    # Layout protegido
+│   ├── _app.tsx                    # Protected layout
 │   └── _app/
 │       ├── dashboard.tsx
 │       ├── sales/
@@ -297,7 +288,7 @@ src/
 │       └── inventory/
 │           └── products.tsx
 │
-├── modules/                        # 🏢 Lógica de negocio por módulo
+├── modules/                        # 🏢 Business logic per module
 │   ├── sales/                      # MODULE
 │   │   ├── quotes/                 # DOMAIN
 │   │   │   ├── cart/               # FEATURE
@@ -350,7 +341,7 @@ src/
 │           ├── login/              # FEATURE
 │           └── registration/       # FEATURE
 │
-├── shared/                         # 🔄 Código reutilizable
+├── shared/                         # 🔄 Reusable code
 │   ├── components/
 │   │   └── ui/                     # shadcn/ui
 │   ├── hooks/
@@ -359,24 +350,24 @@ src/
 │   ├── lib/
 │   │   ├── utils.ts                # cn(), formatters
 │   │   ├── api-client.ts           # Axios/fetch config
-│   │   └── env.ts                  # Variables de entorno tipadas
+│   │   └── env.ts                  # Typed environment variables
 │   ├── types/
 │   │   └── common.types.ts
 │   └── constants/
 │
-├── app/                            # 🎯 Configuración global
-│   ├── store/                      # Global store (si necesario)
+├── app/                            # 🎯 Global configuration
+│   ├── store/                      # Global store (if needed)
 │   ├── providers/                  # Context providers
 │   │   ├── ThemeProvider.tsx
 │   │   └── QueryProvider.tsx
 │   └── config/
 │
-├── infrastructure/                 # 🔌 Servicios externos globales
+├── infrastructure/                 # 🔌 Global external services
 │   ├── api/                        # API configuration
 │   ├── storage/                    # IndexedDB, localStorage
 │   └── pwa/                        # PWA configuration
 │
-├── assets/                         # 📁 Recursos estáticos
+├── assets/                         # 📁 Static resources
 │   ├── fonts/
 │   │   ├── Inter_18pt-Light.ttf
 │   │   ├── Inter_18pt-Regular.ttf
@@ -388,27 +379,27 @@ src/
     └── globals.css
 ```
 
-### 4.2 Jerarquía de Carpetas
+### 4.2 Folder Hierarchy
 
 ```
-MODULE (módulo de negocio)
-└── DOMAIN (área funcional)
-    └── FEATURE (funcionalidad específica)
-        ├── domain/          # Reglas de negocio
-        ├── application/     # Casos de uso y estado
-        ├── infrastructure/  # Implementaciones externas
+MODULE (business module)
+└── DOMAIN (functional area)
+    └── FEATURE (specific functionality)
+        ├── domain/          # Business rules
+        ├── application/     # Use cases and state
+        ├── infrastructure/  # External implementations
         └── presentation/    # UI
 ```
 
-### 4.3 Organización de Imports
+### 4.3 Import Organization
 
 ```typescript
-// 1. Librerías externas
+// 1. External libraries
 import React from 'react';
 import { create } from 'zustand';
 import { useQuery } from '@tanstack/react-query';
 
-// 2. Módulos internos (por capa, de interno a externo)
+// 2. Internal modules (by layer, from inner to outer)
 import { CartItem } from '../domain/entities/CartItem';
 import { addToCartUseCase } from '../application/use-cases/AddToCart';
 import { cartRepository } from '../infrastructure/repositories/CartRepository';
@@ -423,18 +414,18 @@ import type { Cart } from '../domain/types/cart.types';
 
 ---
 
-## 5. Estándares de Componentes
+## 5. Component Standards
 
-### 5.1 Estrategia de Componentes
+### 5.1 Component Strategy
 
-| Prioridad | Acción |
+| Priority | Action |
 |-----------|--------|
-| **1. Si no existe** | Preguntar al usuario: [1] Usar shadcn directamente, [2] Crear para componente |
-| **3. Shadcn fallback** | Solo usar registro MCP Shadcn si el usuario elige opción [1] |
+| **1. If it doesn't exist** | Ask the user: [1] Use shadcn directly, [2] Create the component |
+| **3. Shadcn fallback** | Only use the Shadcn MCP registry if the user chooses option [1] |
 
-> **Beneficio:** 90% menos bugs usando componentes existentes vs creación manual.
+> **Benefit:** 90% fewer bugs by using existing components vs. building them manually.
 
-### 5.2 Estructura de Componentes
+### 5.2 Component Structure
 
 ```typescript
 interface ComponentProps {
@@ -465,29 +456,29 @@ export const Component = memo<ComponentProps>(({
 Component.displayName = 'Component';
 ```
 
-### 5.3 Convenciones de Nombrado
+### 5.3 Naming Conventions
 
-| Elemento | Convención | Ejemplo |
+| Element | Convention | Example |
 |----------|------------|---------|
-| Componentes | PascalCase | `OrderCard.tsx` |
-| Archivos | kebab-case | `order-card.tsx` |
+| Components | PascalCase | `OrderCard.tsx` |
+| Files | kebab-case | `order-card.tsx` |
 | data-testid | kebab-case | `data-testid="order-card"` |
-| Props/funciones | camelCase | `onSubmit`, `isLoading` |
-| Constantes | SCREAMING_SNAKE | `MAX_ITEMS` |
+| Props/functions | camelCase | `onSubmit`, `isLoading` |
+| Constants | SCREAMING_SNAKE | `MAX_ITEMS` |
 
-### 5.4 Guidelines de Props
+### 5.4 Props Guidelines
 
-- Siempre definir interfaces TypeScript para props
-- Usar props opcionales con defaults sensatos
-- Incluir `className` para overrides de estilos
-- Agregar `data-testid` para testing
-- Documentar props complejas con JSDoc
+- Always define TypeScript interfaces for props
+- Use optional props with sensible defaults
+- Include `className` for style overrides
+- Add `data-testid` for testing
+- Document complex props with JSDoc
 
 ---
 
-## 6. Patrones de Estado
+## 6. State Patterns
 
-### 6.1 Estructura de Zustand Store
+### 6.1 Zustand Store Structure
 
 ```typescript
 // modules/sales/quotes/cart/application/store/cart.store.ts
@@ -505,7 +496,7 @@ interface CartState {
   loading: boolean;
   error: string | null;
   
-  // Actions (delegan a use cases)
+  // Actions (delegate to use cases)
   addItem: (productId: string, quantity: number) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   clearCart: () => void;
@@ -555,16 +546,16 @@ export const useCartStore = create<CartState>()(
 );
 ```
 
-### 6.2 Cuándo Usar Cada Tipo de Estado
+### 6.2 When to Use Each State Type
 
-| Tipo | Cuándo Usar | Herramienta |
+| Type | When to Use | Tool |
 |------|-------------|-------------|
-| **Server State** | Datos del API, cache | TanStack Query |
+| **Server State** | API data, cache | TanStack Query |
 | **Global Client State** | Auth, theme, cart | Zustand |
 | **Local Component State** | Forms, UI toggles | useState/useReducer |
-| **URL State** | Filtros, paginación | TanStack Router search params |
+| **URL State** | Filters, pagination | TanStack Router search params |
 
-### 6.3 Integración con TanStack Query
+### 6.3 TanStack Query Integration
 
 ```typescript
 // modules/sales/quotes/products/infrastructure/api/products.api.ts
@@ -596,18 +587,18 @@ export function useProduct(id: string) {
 
 ---
 
-## 7. Estándares de Testing
+## 7. Testing Standards
 
-### 7.1 Estrategia de Testing
+### 7.1 Testing Strategy
 
-| Tipo | Cobertura | Herramienta | Qué Testear |
+| Type | Coverage | Tool | What to Test |
 |------|-----------|-------------|-------------|
-| **Unit** | Alta | Vitest | Entities, use cases, utilities |
-| **Integration** | Media | Vitest + MSW | Feature workflows, API integration |
-| **Component** | Media | React Testing Library | User interactions, accessibility |
-| **E2E** | Baja | Playwright | Critical user journeys |
+| **Unit** | High | Vitest | Entities, use cases, utilities |
+| **Integration** | Medium | Vitest + MSW | Feature workflows, API integration |
+| **Component** | Medium | React Testing Library | User interactions, accessibility |
+| **E2E** | Low | Playwright | Critical user journeys |
 
-### 7.2 Estructura de Tests
+### 7.2 Test Structure
 
 ```typescript
 // modules/sales/quotes/cart/application/use-cases/__tests__/AddToCart.test.ts
@@ -685,25 +676,25 @@ describe('CartItem', () => {
 
 ---
 
-## 8. Accesibilidad
+## 8. Accessibility
 
-### 8.1 Cumplimiento WCAG 2.1 AA
+### 8.1 WCAG 2.1 AA Compliance
 
-| Requisito | Implementación |
+| Requirement | Implementation |
 |-----------|----------------|
-| Elementos semánticos | Usar HTML semántico (`<nav>`, `<main>`, `<article>`) |
-| Jerarquía de headings | Un solo `<h1>`, headings en orden descendente |
-| Navegación por teclado | Todos los elementos interactivos accesibles con Tab |
-| Screen readers | Labels descriptivos, roles ARIA cuando necesario |
-| Contraste de color | Mínimo 4.5:1 para texto normal |
+| Semantic elements | Use semantic HTML (`<nav>`, `<main>`, `<article>`) |
+| Heading hierarchy | A single `<h1>`, headings in descending order |
+| Keyboard navigation | All interactive elements reachable with Tab |
+| Screen readers | Descriptive labels, ARIA roles when necessary |
+| Color contrast | Minimum 4.5:1 for normal text |
 
-### 8.2 Implementación ARIA
+### 8.2 ARIA Implementation
 
 ```typescript
-// ✅ Correcto - HTML semántico primero
+// ✅ Correct - semantic HTML first
 <button onClick={handleSubmit}>Guardar</button>
 
-// ✅ Correcto - ARIA cuando es necesario
+// ✅ Correct - ARIA when necessary
 <div 
   role="tabpanel" 
   aria-labelledby="tab-1"
@@ -712,38 +703,38 @@ describe('CartItem', () => {
   {content}
 </div>
 
-// ❌ Incorrecto - ARIA innecesario
+// ❌ Incorrect - unnecessary ARIA
 <button role="button" aria-label="button">Guardar</button>
 ```
 
 ---
 
-## 9. Rendimiento
+## 9. Performance
 
-### 9.1 Optimización de Bundle
+### 9.1 Bundle Optimization
 
-| Estrategia | Implementación |
+| Strategy | Implementation |
 |------------|----------------|
-| Code splitting | Por ruta (automático con TanStack Router) |
-| Lazy loading | `React.lazy()` para componentes no críticos |
-| Tree shaking | Imports específicos, no barrel exports en shared |
-| Bundle budget | Máximo 500KB total |
+| Code splitting | By route (automatic with TanStack Router) |
+| Lazy loading | `React.lazy()` for non-critical components |
+| Tree shaking | Specific imports, no barrel exports in shared |
+| Bundle budget | 500KB total maximum |
 
-### 9.2 Rendimiento en Runtime
+### 9.2 Runtime Performance
 
 ```typescript
-// ✅ React.memo para componentes costosos
+// ✅ React.memo for expensive components
 export const ExpensiveList = memo<ListProps>(({ items }) => {
   return items.map(item => <ExpensiveItem key={item.id} item={item} />);
 });
 
-// ✅ useMemo para cálculos costosos
+// ✅ useMemo for expensive computations
 const sortedItems = useMemo(() => 
   items.sort((a, b) => a.name.localeCompare(b.name)),
   [items]
 );
 
-// ✅ useCallback para handlers pasados a children
+// ✅ useCallback for handlers passed to children
 const handleClick = useCallback((id: string) => {
   onSelect(id);
 }, [onSelect]);
@@ -751,47 +742,47 @@ const handleClick = useCallback((id: string) => {
 
 ### 9.3 Loading Performance
 
-- Optimización de imágenes y lazy loading
-- Skeleton screens para estados de carga
-- Prefetch de recursos críticos
-- Virtual scrolling para listas grandes
+- Image optimization and lazy loading
+- Skeleton screens for loading states
+- Prefetch critical resources
+- Virtual scrolling for large lists
 
 ---
 
-## 10. Seguridad
+## 10. Security
 
-### 10.1 Seguridad Client-Side
+### 10.1 Client-Side Security
 
-| Riesgo | Mitigación |
+| Risk | Mitigation |
 |--------|------------|
-| API keys expuestas | Nunca en código frontend, usar variables de entorno server-side |
-| XSS | Sanitización de inputs, no usar `dangerouslySetInnerHTML` |
-| Datos sensibles | No almacenar en localStorage sin encriptar |
+| Exposed API keys | Never in frontend code; use server-side environment variables |
+| XSS | Input sanitization, do not use `dangerouslySetInnerHTML` |
+| Sensitive data | Do not store in localStorage without encryption |
 
-### 10.2 Autenticación
+### 10.2 Authentication
 
 ```typescript
-// Manejo seguro de tokens
+// Secure token handling
 const useAuthStore = create<AuthState>((set) => ({
   token: null,
   
   setToken: (token: string) => {
-    // Almacenar en memoria, no localStorage
+    // Store in memory, not localStorage
     set({ token });
   },
   
   logout: () => {
     set({ token: null });
-    // Limpiar cualquier dato sensible
+    // Clear any sensitive data
   },
 }));
 ```
 
 ---
 
-## 11. Manejo de Errores
+## 11. Error Handling
 
-### 11.1 Error Boundaries por Feature
+### 11.1 Error Boundaries per Feature
 
 ```typescript
 // shared/components/feedback/ErrorBoundary.tsx
@@ -815,8 +806,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error capturado:', error, errorInfo);
-    // Enviar a servicio de logging
+    console.error('Error captured:', error, errorInfo);
+    // Send to logging service
   }
 
   render() {
@@ -838,7 +829,7 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 ```
 
-### 11.2 Manejo de Errores en API
+### 11.2 API Error Handling
 
 ```typescript
 // shared/lib/api-client.ts
@@ -853,7 +844,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError<{ message: string }>) => {
     const message = error.response?.data?.message || 'Error de conexión';
     
-    // Mensaje amigable para el usuario
+    // User-friendly message
     return Promise.reject(new Error(message));
   }
 );
@@ -863,59 +854,59 @@ apiClient.interceptors.response.use(
 
 ## 12. Progressive Web App
 
-### 12.1 Features PWA
+### 12.1 PWA Features
 
-| Feature | Implementación |
+| Feature | Implementation |
 |---------|----------------|
-| Service Worker | Caching y soporte offline |
-| Web App Manifest | Instalabilidad |
-| Push Notifications | Cuando sea necesario |
-| Background Sync | Sincronización al restaurar conexión |
+| Service Worker | Caching and offline support |
+| Web App Manifest | Installability |
+| Push Notifications | When necessary |
+| Background Sync | Synchronization when the connection is restored |
 
-### 12.2 Estrategia Offline
+### 12.2 Offline Strategy
 
-| Tipo de Recurso | Estrategia |
+| Resource Type | Strategy |
 |-----------------|------------|
-| Assets estáticos | Cache-first |
-| Datos dinámicos | Network-first con fallback |
-| Páginas offline | Fallback pre-cacheado |
-| Formularios | Queue y sync cuando online |
+| Static assets | Cache-first |
+| Dynamic data | Network-first with fallback |
+| Offline pages | Pre-cached fallback |
+| Forms | Queue and sync when online |
 
 ---
 
-## 13. Estándares de Idioma
+## 13. Language Standards
 
-### 13.1 Español para Todo Contenido Visible al Usuario
+### 13.1 Spanish for All User-Facing Content
 
-**REGLA CRÍTICA: Todo texto visible al usuario final DEBE estar en español.**
+**CRITICAL RULE: All text visible to the end user MUST be in Spanish.**
 
-#### ✅ Español Requerido
+#### ✅ Spanish Required
 
-- Labels de UI, botones, formularios, mensajes, notificaciones
-- Respuestas de API, errores de validación, templates de email
-- Cualquier texto que el usuario vea (frontend o backend)
+- UI labels, buttons, forms, messages, notifications
+- API responses, validation errors, email templates
+- Any text the user sees (frontend or backend)
 
-#### ✅ Inglés Requerido
+#### ✅ English Required
 
-- Código (variables, funciones, clases)
-- Logs técnicos, comentarios, commits de git
-- Documentación técnica para desarrolladores
+- Code (variables, functions, classes)
+- Technical logs, comments, git commits
+- Technical documentation for developers
 
-#### ❌ Nunca Mezclar Idiomas en Texto Visible
+#### ❌ Never Mix Languages in Visible Text
 
 ```typescript
-// ✅ CORRECTO
+// ✅ CORRECT
 <Button>Guardar</Button>
 toast.success("Datos guardados correctamente");
 throw new BadRequestException('No se pudo crear el usuario');
 
-// ❌ INCORRECTO
+// ❌ INCORRECT
 <Button>Save cambios</Button>
 toast.error("Failed al guardar");
 throw new BadRequestException('Invalid datos proporcionados');
 ```
 
-### 13.2 Implementación
+### 13.2 Implementation
 
 ```typescript
 // shared/constants/messages.ts
@@ -941,47 +932,47 @@ export const MESSAGES = {
 
 ---
 
-## 14. Consideraciones Generales
+## 14. General Considerations
 
-### 14.1 Gestor de Paquetes
+### 14.1 Package Manager
 
-**Regla:** Usar `pnpm` como gestor de paquetes por defecto, pero respetar el gestor existente en proyectos ya iniciados.
+**Rule:** Use `pnpm` as the default package manager, but respect the existing manager in already-started projects.
 
-| Escenario | Acción | Razón |
+| Scenario | Action | Reason |
 |-----------|--------|-------|
-| Proyecto nuevo | Usar `pnpm` | Mejor rendimiento y manejo de dependencias |
-| Proyecto con `package-lock.json` | Continuar con `npm` | Evitar conflictos de lockfiles |
-| Proyecto con `yarn.lock` | Continuar con `yarn` | Evitar conflictos de lockfiles |
-| Proyecto con `pnpm-lock.yaml` | Continuar con `pnpm` | Ya está configurado |
+| New project | Use `pnpm` | Better performance and dependency handling |
+| Project with `package-lock.json` | Continue with `npm` | Avoid lockfile conflicts |
+| Project with `yarn.lock` | Continue with `yarn` | Avoid lockfile conflicts |
+| Project with `pnpm-lock.yaml` | Continue with `pnpm` | Already configured |
 
-#### Cómo Identificar el Gestor Actual
+#### How to Identify the Current Manager
 
 ```bash
 ls -la | grep -E "package-lock|yarn.lock|pnpm-lock"
 ```
 
-| Archivo encontrado | Gestor a usar |
+| File found | Manager to use |
 |--------------------|---------------|
 | `package-lock.json` | `npm` |
 | `yarn.lock` | `yarn` |
 | `pnpm-lock.yaml` | `pnpm` |
-| Ninguno | `pnpm` (proyecto nuevo) |
+| None | `pnpm` (new project) |
 
-#### Comandos Equivalentes
+#### Equivalent Commands
 
-| Acción | pnpm | npm | yarn |
+| Action | pnpm | npm | yarn |
 |--------|------|-----|------|
-| Instalar | `pnpm install` | `npm install` | `yarn` |
-| Agregar dep | `pnpm add <pkg>` | `npm install <pkg>` | `yarn add <pkg>` |
-| Agregar dev | `pnpm add -D <pkg>` | `npm install -D <pkg>` | `yarn add -D <pkg>` |
-| Ejecutar script | `pnpm <script>` | `npm run <script>` | `yarn <script>` |
-| Remover | `pnpm remove <pkg>` | `npm uninstall <pkg>` | `yarn remove <pkg>` |
+| Install | `pnpm install` | `npm install` | `yarn` |
+| Add dep | `pnpm add <pkg>` | `npm install <pkg>` | `yarn add <pkg>` |
+| Add dev | `pnpm add -D <pkg>` | `npm install -D <pkg>` | `yarn add -D <pkg>` |
+| Run script | `pnpm <script>` | `npm run <script>` | `yarn <script>` |
+| Remove | `pnpm remove <pkg>` | `npm uninstall <pkg>` | `yarn remove <pkg>` |
 
-> **⚠️ Importante:** Nunca mezclar gestores de paquetes en un mismo proyecto.
+> **⚠️ Important:** Never mix package managers within the same project.
 
 ---
 
-## 15. Configuración Base
+## 15. Base Configuration
 
 ### 15.1 `vite.config.ts`
 
@@ -994,7 +985,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
-    // TanStack Router DEBE ir primero
+    // TanStack Router MUST come first
     TanStackRouterVite({
       target: 'react',
       autoCodeSplitting: true,
@@ -1022,6 +1013,8 @@ export default defineConfig({
   },
 });
 ```
+
+See [`frontend-architecture.md`](frontend-architecture.md) and the chosen web-track standard for build configuration details.
 
 ### 15.2 `src/router.tsx`
 
@@ -1157,46 +1150,46 @@ export default defineConfig({
 
 ---
 
-## 16. Checklist de Implementación
+## 16. Implementation Checklist
 
-### Configuración Inicial
+### Initial Setup
 
-- [ ] Instalar dependencias: `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/react-query`
-- [ ] Crear `vite.config.ts` con TanStackRouterVite plugin (PRIMERO)
-- [ ] Crear `src/router.tsx` con configuración del router
-- [ ] Crear `src/main.tsx` con RouterProvider
-- [ ] Crear `src/routes/__root.tsx`
-- [ ] Configurar path aliases en `tsconfig.json`
-- [ ] Agregar `routeTree.gen.ts` a `.prettierignore` y `.eslintignore`
-- [ ] Configurar Vitest
+- [ ] Install dependencies: `@tanstack/react-router`, `@tanstack/router-plugin`, `@tanstack/react-query`
+- [ ] Create `vite.config.ts` with the TanStackRouterVite plugin (FIRST)
+- [ ] Create `src/router.tsx` with the router configuration
+- [ ] Create `src/main.tsx` with RouterProvider
+- [ ] Create `src/routes/__root.tsx`
+- [ ] Configure path aliases in `tsconfig.json`
+- [ ] Add `routeTree.gen.ts` to `.prettierignore` and `.eslintignore`
+- [ ] Configure Vitest
 
-### Estructura de Rutas
+### Route Structure
 
-- [ ] Crear layouts pathless (`_auth.tsx`, `_app.tsx`)
-- [ ] Implementar guards de autenticación en `beforeLoad`
-- [ ] Usar `$param` para rutas dinámicas
-- [ ] Usar `-` para carpetas de colocación
-- [ ] Verificar que las URLs sean correctas
+- [ ] Create pathless layouts (`_auth.tsx`, `_app.tsx`)
+- [ ] Implement authentication guards in `beforeLoad`
+- [ ] Use `$param` for dynamic routes
+- [ ] Use `-` for colocation folders
+- [ ] Verify that URLs are correct
 
-### Arquitectura
+### Architecture
 
-- [ ] Organizar módulos siguiendo Module/Domain/Feature
-- [ ] Implementar capas de Clean Architecture por feature
-- [ ] Configurar stores Zustand por feature
-- [ ] Configurar TanStack Query para server state
-- [ ] Crear barrel exports (`index.ts`) por feature
+- [ ] Organize modules following Module/Domain/Feature
+- [ ] Implement Clean Architecture layers per feature
+- [ ] Configure Zustand stores per feature
+- [ ] Configure TanStack Query for server state
+- [ ] Create barrel exports (`index.ts`) per feature
 
-### Calidad
+### Quality
 
-- [ ] Configurar Vitest con coverage
-- [ ] Agregar tests unitarios para use cases
-- [ ] Agregar tests de componentes
-- [ ] Verificar accesibilidad (axe)
-- [ ] Validar textos en español
+- [ ] Configure Vitest with coverage
+- [ ] Add unit tests for use cases
+- [ ] Add component tests
+- [ ] Verify accessibility (axe)
+- [ ] Validate Spanish texts
 
 ---
 
-## Referencias
+## References
 
 - [TanStack Router Documentation](https://tanstack.com/router/latest)
 - [TanStack Query Documentation](https://tanstack.com/query/latest)

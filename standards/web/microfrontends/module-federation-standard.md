@@ -8,7 +8,7 @@ updated: 2026-06
 
 # Module Federation Microfrontends Standard
 
-> **Choose this track when** the whole frontend is a **homogeneous React stack** and you want: efficient sharing of singleton dependencies, end-to-end TypeScript typing across module boundaries, native code-splitting, and **runtime composition driven by the backend** (per-tenant licensing). If you must mix frameworks or need hard per-module lifecycle isolation, use the [Single-SPA track](../single-spa/single-spa-standard.md) instead.
+> **Choose this track when** the whole frontend is a **homogeneous React stack** and you want: efficient sharing of singleton dependencies, end-to-end TypeScript typing across module boundaries, native code-splitting, and **runtime composition driven by the backend** (per-tenant licensing). This is the **2026 de-facto standard for scalable React microfrontends**. If you must mix frameworks or need hard per-module lifecycle isolation, use the [Single-SPA track](../single-spa/single-spa-standard.md) instead — or **combine both** (Single-SPA orchestrates the apps, Module Federation shares code between them). See [`frontend-architecture.md`](../_base/frontend-architecture.md) for the full decision tree.
 
 This standard uses **Module Federation 2.0** (`@module-federation/enhanced`), whose runtime is decoupled from the bundler into a standalone SDK. That decoupling is what makes **dynamic, license-gated remote loading** possible: the host asks the backend which remotes to load and registers them at runtime.
 

@@ -11,17 +11,42 @@ Applies to every web track (SPA, Single-SPA, Module Federation). Implements [`co
 
 ## Choosing a web track
 
-These are **independent options**, not a default-plus-exceptions. Pick by need:
+These are **need-driven options, not a hierarchy** — but microfrontend complexity is real, so start simple and adopt distribution only when a concrete force demands it. Industry adoption of microfrontends had a "reality check": most teams that backed out had adopted them speculatively. Don't.
+
+Walk the decision, top to bottom:
+
+```
+One cohesive app · one (or few) teams · small/medium scope?
+  └─ YES → SPA
+  └─ NO (multiple teams, independent deploy) → microfrontends → pick the composition model:
+        ├─ Homogeneous React · share capabilities/remotes across products ·
+        │   license-gated runtime composition        → MODULE FEDERATION   (default MFE for React)
+        ├─ Mixed frameworks (React + Angular + legacy) · hard per-module
+        │   lifecycle/CSS isolation · explicit orchestration → SINGLE-SPA   (framework-agnostic orchestrator)
+        └─ Many independently-deployed apps  AND  code sharing between them
+                                                      → SINGLE-SPA + MODULE FEDERATION (combined)
+```
 
 | Track | Choose when | Doc |
 |---|---|---|
-| **SPA** | One cohesive app, single deployable | [`web/spa/spa-standard.md`](../spa/spa-standard.md) |
-| **Single-SPA** | Independently-deployed modules, possibly **mixed frameworks**, hard lifecycle isolation | [`web/single-spa/single-spa-standard.md`](../single-spa/single-spa-standard.md) |
-| **Module Federation** | Homogeneous React, capabilities reused across products, **license-gated runtime composition** | [`web/microfrontends/module-federation-standard.md`](../microfrontends/module-federation-standard.md) |
+| **SPA** | One cohesive app, single deployable, single/few teams | [`web/spa/spa-standard.md`](../spa/spa-standard.md) |
+| **Module Federation** | **Homogeneous React**, capabilities reused across products, **license-gated runtime composition**. The 2026 de-facto standard for scalable React MFEs. | [`web/microfrontends/module-federation-standard.md`](../microfrontends/module-federation-standard.md) |
+| **Single-SPA** | **Mixed frameworks** or hard per-module lifecycle/CSS isolation; a dedicated top-level orchestrator | [`web/single-spa/single-spa-standard.md`](../single-spa/single-spa-standard.md) |
+| **Combined** | Single-SPA orchestrates independently-deployed apps **and** Module Federation shares code/modules between them | both docs above |
 
-Default to **SPA** until a concrete need justifies microfrontend complexity. Don't adopt it speculatively.
+> **They are not mutually exclusive.** Single-SPA orchestrates *which app/route is active*; Module Federation shares *code/modules at runtime*. A large platform can use Single-SPA as the shell and Module Federation for cross-app sharing. Module Federation alone is enough for a homogeneous-React platform (single shell, products as layouts, capabilities as remotes).
 
-> **Talking to the backend.** Each module/feature calls its own context's API through the shared gateway. When one screen must aggregate **several** contexts, stitch read-only data in the frontend (parallel TanStack Query calls); reach for a server-side [Backend for Frontend](../../backend/architecture/bff-standard.md) only when that stitching gets chatty or leaks too much backend shape into the UI.
+### How each track meets the backend
+
+The frontend track decides **how the UI is composed**; the backend decides **who owns the data and logic**. They meet at the **bounded context**: a domain is a **vertical slice** owned end-to-end by one team — microfrontend + (optional) BFF + microservice(s). See [`core/platform-architecture.md`](../../core/platform-architecture.md) for the full end-to-end model.
+
+| Track | Typical backend | BFF |
+|---|---|---|
+| **SPA** | Modular monolith, or a few microservices behind a gateway | Usually none (one per client type only if web **and** mobile diverge) |
+| **Module Federation** | Microservices per context; each capability is a team's vertical slice | **BFF per capability** (optional); a thin shell service for the license/manifest endpoint |
+| **Single-SPA** | Microservices per context | **BFF per app** (the natural fit) |
+
+Each module/feature calls **its own context's** API through the shared gateway. When one screen must aggregate **several** contexts, stitch read-only data in the frontend (parallel TanStack Query calls); reach for a server-side [Backend for Frontend](../../backend/architecture/bff-standard.md) only when that stitching gets chatty or leaks too much backend shape into the UI.
 
 ## Folder structure
 

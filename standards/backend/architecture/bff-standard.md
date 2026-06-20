@@ -31,6 +31,17 @@ Confusing these is the whole reason this doc exists (see [`choosing-distributed-
 - **Client-specific concerns** — session/token exchange for that client, pagination merging, response trimming for mobile bandwidth, BFF-side read caching of composed views.
 - **One BFF per experience that diverges** — web shell, native mobile, partner portal. If two clients want the same thing, they share one; the moment their needs fork, split.
 
+## Two ways to scope a BFF
+
+These compose — a platform can use both:
+
+| Scope | One BFF per… | Use when |
+|---|---|---|
+| **Per client type** (classic Netflix BFF) | channel — web, mobile, desktop, partner | the same data needs a different shape per device/channel (mobile needs trimmed/merged payloads; web needs richer composition) |
+| **Per microfrontend / vertical slice** | microfrontend (a bounded context's UI) | a microfrontend platform where each slice's frontend team owns a thin edge that aggregates **its** context's services |
+
+In a microfrontend platform the **per-slice** model dominates: the BFF is **owned by the microfrontend**, not by the domain service tier. It is the frontend team's server-side edge — it shields the UI from backend churn (a downstream change touches the BFF, not the MFE) and shapes exactly that slice's view model. See the end-to-end model in [`core/platform-architecture.md`](../../core/platform-architecture.md).
+
 ## Rules
 
 - **MUST NOT** contain business rules or own a database. It orchestrates; the domain decides (mirrors the Application-layer rule in [`microservice-anatomy.md`](microservice-anatomy.md)).
@@ -42,13 +53,15 @@ Confusing these is the whole reason this doc exists (see [`choosing-distributed-
 
 ## Relationship to microfrontends
 
-In the [Module Federation model](../../web/microfrontends/module-federation-standard.md) the shell already composes capabilities client-side and asks the backend which remotes a tenant is licensed for. That covers most composition. Add a BFF **only** when server-side aggregation is clearly better:
+Each microfrontend is a **vertical slice** of a bounded context, owned end-to-end by one team: its UI, its (optional) BFF, and its microservice(s). The BFF is the slice's server-side edge. In the [Module Federation model](../../web/microfrontends/module-federation-standard.md) the shell already composes capabilities client-side and asks the backend which remotes a tenant is licensed for, so client-side stitching covers a lot. Add a per-slice BFF when server-side aggregation is clearly better:
 
 | Situation | Resolve in |
 |---|---|
 | One capability ↔ one context | The capability's API via the gateway |
 | Shell stitches a few read models | Frontend (parallel queries) |
 | A screen needs heavy cross-context aggregation, or mobile needs a trimmed/merged payload | **BFF** |
+
+The BFF still calls **its own context's** services (plus a few neighbors for composition) — it does not become a hub for service-to-service business flow; that stays async at the service tier ([`event-driven.md`](event-driven.md)).
 
 ## Stack (2026)
 

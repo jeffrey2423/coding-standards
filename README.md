@@ -22,16 +22,18 @@ npx @jeffrey2423/coding-standards
 
 ```
 ? What are you building?        ◉ Backend / API (.NET)   ◉ Frontend Web   ◯ Mobile
-? Web architecture:             ● Microfrontends (Module Federation)
-? Backend — distributed arch:   ◉ Multi-tenancy  ◉ Event-driven  ◉ Public API facade  ◉ BFF ...
-✓ Copied 19 files to coding-standards/
+? Web app shape:                ● Microfrontends
+? Composition model:            ● Module Federation
+? Backend — architecture docs:  ◉ Modular monolith  ◉ Multi-tenancy  ◉ Event-driven  ◉ BFF ...
+✓ Copied 21 files to coding-standards/
 ✓ Generated coding-standards/INDEX.md
 ```
 
 Or non-interactively (great for CI and AI agents):
 
 ```bash
-npx @jeffrey2423/coding-standards --backend --web=microfrontends      # selective
+npx @jeffrey2423/coding-standards --backend --web=mf                  # React microfrontends
+npx @jeffrey2423/coding-standards --backend --web=single-spa+mf       # orchestrate + share
 npx @jeffrey2423/coding-standards --mobile=flutter,react-native --yes # mobile only
 npx @jeffrey2423/coding-standards --all                               # everything
 npx @jeffrey2423/coding-standards --help
@@ -51,10 +53,10 @@ Standards are organized into **independent packs** selected at install time:
 |---|---|---|
 | **core** | always | Clean Architecture + DDD, coding conventions, testing strategy, AI collaboration |
 | **backend** | `--backend` | .NET standards, tech stack, DB conventions + opt-in architecture docs |
-| **web** | `--web=<track>` | shared web standards + **one** track: `spa` · `single-spa` · `microfrontends` |
+| **web** | `--web=<track>` | shared web standards + your track(s): `spa` · `mf` · `single-spa` · `single-spa+mf` |
 | **mobile** | `--mobile=<fw,...>` | `flutter` and/or `react-native` |
 
-**Single-SPA and Module Federation microfrontends are separate, mutually-exclusive tracks** — pick by need, no forced default.
+**Pick the web track by need, no forced default.** SPA for one cohesive app; for microfrontends, **Module Federation** is the 2026 default for homogeneous React, **Single-SPA** orchestrates mixed frameworks / hard isolation, and the two **combine** (`single-spa+mf`) — Single-SPA orchestrates the apps while Module Federation shares code between them. See `web/_base/frontend-architecture.md` for the decision tree.
 
 ## Repository structure
 
@@ -62,6 +64,7 @@ Standards are organized into **independent packs** selected at install time:
 standards/
 ├── core/                       # always installed
 │   ├── clean-architecture-ddd.md
+│   ├── platform-architecture.md  # north star: end-to-end vertical slices
 │   ├── coding-conventions.md
 │   ├── testing-strategy.md
 │   └── ai-collaboration.md
@@ -71,6 +74,7 @@ standards/
 │   ├── database-conventions.md
 │   └── architecture/           # distributed-architecture docs
 │       ├── choosing-distributed-architecture.md   # decision map: what to pick & when
+│       ├── monolith-standard.md
 │       ├── microservice-anatomy.md
 │       ├── multitenancy.md
 │       ├── event-driven.md
@@ -79,7 +83,7 @@ standards/
 │       └── shared-vs-owned.md
 ├── web/
 │   ├── _base/                  # frontend architecture, stack, design system
-│   ├── spa/                    #   ── pick one web track ──
+│   ├── spa/                    #   ── pick by need; single-spa + mf can combine ──
 │   ├── single-spa/
 │   └── microfrontends/
 └── mobile/
@@ -102,13 +106,14 @@ Flutter (Riverpod 3 · GoRouter · Material 3) · React Native (Expo SDK 53+ · 
 
 ## Architecture highlights
 
-- **Pick by need, not by default** — `architecture/choosing-distributed-architecture.md` is the decision map: modular monolith vs microservices, and which edge layer (gateway / public facade / BFF) each problem actually calls for. The gateway is foundational; the public facade and BFF are opt-in and answer **different** questions.
+- **End-to-end vertical slices** — `core/platform-architecture.md` is the north star: a bounded context is a slice owned by one team — microfrontend + (optional) BFF + microservice(s). Frontend and backend boundaries align on the same seam, so ownership is unambiguous.
+- **Pick by need, not by default** — `architecture/choosing-distributed-architecture.md` is the decision map: **modular monolith** (start here) vs microservices, and which edge layer (gateway / public facade / BFF) each problem actually calls for. The gateway is foundational; the public facade and BFF are opt-in and answer **different** questions.
 - **Clean Architecture + DDD** everywhere; strict inward dependency rule.
 - **Multi-tenancy**: hybrid bridge model — pooled + PostgreSQL RLS by default, selective silo, central tenant catalog.
 - **Event-driven**: transactional Outbox, idempotent consumers, sagas with compensation, correlation IDs.
 - **Public API facade** (opt-in, for third parties): contracts as product — OpenAPI 3.1 + AsyncAPI 3.0, Standard Webhooks (HMAC), OAuth 2.1, Problem Details (RFC 9457), rigorous versioning.
-- **Backend for Frontend** (opt-in): thin, client-specific aggregation layer — owned by a frontend team, no domain logic, used only when one experience must compose multiple contexts server-side.
-- **Microfrontends**: products as router layouts, capabilities as remote MFEs, enabled per license without redeploy.
+- **Backend for Frontend** (opt-in): thin, client-specific aggregation layer — owned by a frontend team, no domain logic; scoped per client type and/or per microfrontend slice.
+- **Microfrontends**: Module Federation is the 2026 default for homogeneous React (single shell, products as router layouts, capabilities as remote MFEs, enabled per license without redeploy); Single-SPA orchestrates mixed frameworks; the two combine.
 
 ## Key principles
 
