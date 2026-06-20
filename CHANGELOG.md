@@ -10,6 +10,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Docs
 - Refresh mobile stack versions to current 2026 releases. **Flutter** 3.27 → **3.44** (Dart floor 3.6 → 3.8). **React Native** 0.77 → **0.85** (New Architecture assumed stable), **Expo** SDK 53 → **56**, React **19.2**. Noted that **Expo Router forked from React Navigation in SDK 56** (don't import `@react-navigation/*` in app code) and that Expo package versions should be pinned via `npx expo install`. Architecture and library choices were already current — only versions changed.
+- Translated all remaining Spanish string literals in the mobile docs (Flutter, React Native) to English — the standards documents are now fully English reference material.
 
 ## [2.2.0] - 2026-06
 
