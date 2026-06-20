@@ -131,6 +131,56 @@ function copySources(sources) {
   return [...new Set(copied)].sort();
 }
 
+// ── Prune references to standards that weren't installed ─────────────────────
+// A partial selection leaves cross-doc links pointing at standards that aren't
+// on disk. Policy: the installed set must not reference non-installed standards
+// at all (no broken links, no "contamination"). So drop every line that links
+// to a .md outside the copied set, then remove any table left with no data rows.
+function pruneForeignReferences(copied) {
+  const installed = new Set(copied); // posix paths relative to standards root
+  const linkRe = /\]\(([^)]+?)\)/g;
+
+  function lineLinksToForeignDoc(line, dirRel) {
+    linkRe.lastIndex = 0;
+    let m;
+    while ((m = linkRe.exec(line)) !== null) {
+      let dest = m[1].trim();
+      if (/^[a-z][a-z0-9+.-]*:\/\//i.test(dest) || dest.startsWith("#")) continue; // external / anchor
+      dest = dest.split("#")[0];
+      if (!dest.endsWith(".md")) continue;
+      const resolved = path.posix.normalize(path.posix.join(dirRel, dest));
+      if (!installed.has(resolved)) return true;
+    }
+    return false;
+  }
+
+  for (const rel of copied) {
+    const abs = path.join(TARGET_DIR, rel);
+    const dirRel = path.posix.dirname(rel);
+    const lines = fs.readFileSync(abs, "utf8").split("\n");
+    const kept = lines.filter((line) => !lineLinksToForeignDoc(line, dirRel));
+    if (kept.length === lines.length) continue; // nothing pruned
+
+    const text = dropOrphanTableHeaders(kept).join("\n").replace(/\n{3,}/g, "\n\n");
+    fs.writeFileSync(abs, text);
+  }
+}
+
+// Drop a Markdown table header + separator left with no data rows after pruning.
+function dropOrphanTableHeaders(lines) {
+  const isRow = (s) => /^\s*\|.*\|\s*$/.test(s);
+  const isSep = (s) => /^[\s|:-]+$/.test(s) && s.includes("-") && s.includes("|");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (isRow(lines[i]) && i + 1 < lines.length && isSep(lines[i + 1])) {
+      const hasDataRow = i + 2 < lines.length && isRow(lines[i + 2]);
+      if (!hasDataRow) { i++; continue; } // skip orphan header + separator
+    }
+    out.push(lines[i]);
+  }
+  return out;
+}
+
 // ── Upgrade / re-run cleanup ─────────────────────────────────────────────────
 // Remove files this installer created on a previous run (tracked in the
 // manifest) plus any v1 flat-layout leftovers, so upgrading from v1 or changing
@@ -420,6 +470,7 @@ async function main() {
   }
 
   const copied = copySources(sources);
+  pruneForeignReferences(copied);
   generateIndex(copied, sel);
   writeManifest(copied, sel);
 

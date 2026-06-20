@@ -39,7 +39,7 @@ npx @jeffrey2423/coding-standards --all                               # everythi
 npx @jeffrey2423/coding-standards --help
 ```
 
-Only the selected standards are copied into `coding-standards/`, plus an `INDEX.md` that lists them with load triggers and precedence rules.
+Only the selected standards are copied into `coding-standards/`, plus an `INDEX.md` that lists them with load triggers and precedence rules. Cross-references to standards you **didn't** select are pruned from the copied docs, so the installed set is **self-contained** — no broken links and no pointers to standards that aren't there.
 
 ### Updating
 
