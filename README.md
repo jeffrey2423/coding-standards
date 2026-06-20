@@ -102,7 +102,7 @@ standards/
 Vite 7 · React 19 · TypeScript strict · TanStack Router + Query · Zustand 5 · shadcn/ui + Radix · TailwindCSS v4 · React Hook Form + Zod · Vitest + RTL + MSW. Microfrontends via **Module Federation 2.0** (`@module-federation/enhanced`, dynamic license-gated remotes) or **Single-SPA**.
 
 ### Mobile
-Flutter (Riverpod 3 · GoRouter · Material 3) · React Native (Expo SDK 53+ · Zustand · Expo Router · NativeWind 4).
+Flutter 3.44 (Riverpod 3 · GoRouter · Material 3) · React Native 0.85 (Expo SDK 56 · React 19.2 · Zustand · Expo Router · NativeWind 4).
 
 ## Architecture highlights
 

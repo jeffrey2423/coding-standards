@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-06
+
+### Docs
+- Refresh mobile stack versions to current 2026 releases. **Flutter** 3.27 → **3.44** (Dart floor 3.6 → 3.8). **React Native** 0.77 → **0.85** (New Architecture assumed stable), **Expo** SDK 53 → **56**, React **19.2**. Noted that **Expo Router forked from React Navigation in SDK 56** (don't import `@react-navigation/*` in app code) and that Expo package versions should be pinned via `npx expo install`. Architecture and library choices were already current — only versions changed.
+
 ## [2.2.0] - 2026-06
 
 ### Added
@@ -72,6 +77,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.2.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.1
 [2.2.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.0
 [2.1.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.1
 [2.1.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.0
