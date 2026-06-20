@@ -28,6 +28,7 @@ const LEGACY_V1_FILES = new Set([
 
 // ── Selectable architecture docs (backend, opt-in) ───────────────────────────
 const ARCH_DOCS = [
+  { id: "monolith", file: "monolith-standard.md", label: "Modular monolith (start here; split later)" },
   { id: "anatomy", file: "microservice-anatomy.md", label: "Microservice anatomy (layers, events)" },
   { id: "multitenancy", file: "multitenancy.md", label: "Multi-tenancy (RLS, tenant catalog)" },
   { id: "events", file: "event-driven.md", label: "Event-driven (outbox, sagas)" },
@@ -35,6 +36,29 @@ const ARCH_DOCS = [
   { id: "bff", file: "bff-standard.md", label: "Backend for Frontend (BFF)" },
   { id: "shared", file: "shared-vs-owned.md", label: "Shared vs owned components" },
 ];
+
+// ── Web track resolution ─────────────────────────────────────────────────────
+// A web selection can resolve to more than one track directory: Single-SPA and
+// Module Federation are not mutually exclusive — Single-SPA orchestrates apps,
+// Module Federation shares code, and a platform can combine them.
+function webTrackDirs(token) {
+  switch (token) {
+    case "spa":
+      return ["spa"];
+    case "mf":
+    case "microfrontends":
+      return ["microfrontends"];
+    case "single-spa":
+      return ["single-spa"];
+    case "single-spa+mf":
+    case "combined":
+      return ["single-spa", "microfrontends"];
+    case "all": // --all: ship every web track for browsing
+      return ["spa", "single-spa", "microfrontends"];
+    default:
+      return ["spa"];
+  }
+}
 
 // ── Resolve which directories/files to copy from a selection ─────────────────
 function resolveSources(sel) {
@@ -60,7 +84,9 @@ function resolveSources(sel) {
 
   if (sel.web) {
     sources.push({ dir: path.join("web", "_base") });
-    sources.push({ dir: path.join("web", sel.web) }); // spa | single-spa | microfrontends
+    for (const dir of webTrackDirs(sel.web)) {
+      sources.push({ dir: path.join("web", dir) });
+    }
   }
 
   for (const fw of sel.mobile) {
@@ -231,7 +257,7 @@ function selectionFromFlags(flags) {
 
   if (all) {
     sel.backend = true;
-    sel.web = "microfrontends";
+    sel.web = "all";
     sel.mobile = ["flutter", "react-native"];
     sel.arch = ARCH_DOCS.map((a) => a.id);
     return sel;
@@ -277,17 +303,31 @@ async function interactive() {
   sel.backend = platforms.includes("backend");
 
   if (platforms.includes("web")) {
-    const web = await p.select({
-      message: "Web architecture:",
+    const kind = await p.select({
+      message: "Web app shape:",
       options: [
-        { value: "spa", label: "SPA (single deployable)", hint: "default" },
-        { value: "single-spa", label: "Single-SPA", hint: "mixed frameworks / hard isolation" },
-        { value: "microfrontends", label: "Microfrontends (Module Federation)", hint: "license-gated, multi-product" },
+        { value: "spa", label: "Single cohesive app (SPA)", hint: "default — one deployable, one/few teams" },
+        { value: "mfe", label: "Microfrontends", hint: "multiple teams, independent deploy" },
       ],
       initialValue: "spa",
     });
-    if (p.isCancel(web)) cancel(p);
-    sel.web = web;
+    if (p.isCancel(kind)) cancel(p);
+
+    if (kind === "spa") {
+      sel.web = "spa";
+    } else {
+      const model = await p.select({
+        message: "Microfrontend composition model:",
+        options: [
+          { value: "mf", label: "Module Federation", hint: "homogeneous React — 2026 default for React MFEs" },
+          { value: "single-spa", label: "Single-SPA", hint: "mixed frameworks / hard lifecycle isolation" },
+          { value: "single-spa+mf", label: "Both — Single-SPA orchestrates + Module Federation shares", hint: "large platforms" },
+        ],
+        initialValue: "mf",
+      });
+      if (p.isCancel(model)) cancel(p);
+      sel.web = model;
+    }
   }
 
   if (platforms.includes("mobile")) {
@@ -333,7 +373,9 @@ Usage:
 
 Flags:
   --backend                 include .NET backend standards
-  --web[=track]             include web standards (track: spa | single-spa | microfrontends; default spa)
+  --web[=track]             include web standards. track: spa | mf | single-spa | single-spa+mf
+                            (aliases: microfrontends=mf, combined=single-spa+mf; default spa)
+                            Single-SPA and Module Federation are not exclusive — single-spa+mf installs both.
   --mobile=flutter,react-native   include mobile standards (comma-separated)
   --arch=a,b,... | --no-arch      backend architecture docs (default: all). ids: ${ARCH_DOCS.map((a) => a.id).join(", ")}
   --all                     include everything
@@ -341,7 +383,8 @@ Flags:
   --help, -h                show this help
 
 Examples:
-  npx @jeffrey2423/coding-standards --backend --web=microfrontends
+  npx @jeffrey2423/coding-standards --backend --web=mf
+  npx @jeffrey2423/coding-standards --backend --web=single-spa+mf
   npx @jeffrey2423/coding-standards --mobile=flutter --yes
   npx @jeffrey2423/coding-standards --all
 `);

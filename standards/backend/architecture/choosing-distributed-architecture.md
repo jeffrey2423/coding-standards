@@ -10,7 +10,7 @@ updated: 2026-06
 
 The docs in this folder are **independent options, not a default-plus-exceptions stack**. Pick each by a concrete need — the same discipline the web side applies to its tracks (see [`web/_base/frontend-architecture.md`](../../web/_base/frontend-architecture.md)). Adopting all of it speculatively is the most common and most expensive mistake.
 
-This is the entry point: it tells you **what to choose and when**, then points at the doc that tells you **how**.
+This is the entry point: it tells you **what to choose and when**, then points at the doc that tells you **how**. For how the backend composes with the frontend end-to-end (microfrontend + BFF + microservice as one team-owned vertical slice), see [`core/platform-architecture.md`](../../core/platform-architecture.md).
 
 ## Step 0 — Do you even need microservices?
 
@@ -18,7 +18,7 @@ Distribution buys independent deploy/scale per domain and team autonomy. It cost
 
 | Your situation | Choose | Why |
 |---|---|---|
-| One team, one cohesive product, no independent-scaling need | **Modular monolith** (Clean Architecture + DDD inside one deployable) | All the boundary discipline, none of the distributed cost. Split out a service later when a real seam appears. |
+| One team, one cohesive product, no independent-scaling need | **Modular monolith** → [`monolith-standard.md`](monolith-standard.md) | All the boundary discipline, none of the distributed cost. Split out a service later when a real seam appears. |
 | Distinct domains with different scaling/availability/team ownership | **Microservices** → [`microservice-anatomy.md`](microservice-anatomy.md) | The boundaries already exist; distribution makes them enforceable. |
 
 > A modular monolith with clean bounded contexts is a **legitimate destination**, not a failure to migrate. Microservices are an option you select, not a maturity badge.
@@ -51,6 +51,7 @@ Service ↔ service communication is a **separate** decision — async by defaul
 
 | Doc | Load when |
 |---|---|
+| [`monolith-standard.md`](monolith-standard.md) | Building one deployable with clean bounded contexts that can split into services later |
 | [`microservice-anatomy.md`](microservice-anatomy.md) | Designing/implementing a service — layout, layers, event model |
 | [`shared-vs-owned.md`](shared-vs-owned.md) | Deciding if a component belongs to a service or is shared platform infra |
 | [`event-driven.md`](event-driven.md) | Coordinating services — outbox, idempotency, sagas, correlation |

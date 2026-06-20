@@ -6,6 +6,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-06
+
+### Added
+- **`core/platform-architecture.md`** — north-star end-to-end model: a bounded context is a **vertical slice** (microfrontend + optional BFF + microservice) owned by one team, with frontend and backend boundaries aligned on the same seam.
+- **`backend/architecture/monolith-standard.md`** — the modular monolith as a first-class starting point (Clean Architecture + DDD in one deployable) with an explicit path to extract microservices. New selectable arch id `monolith`.
+- Installer: **combined web track** — Single-SPA and Module Federation are no longer mutually exclusive. New `--web=single-spa+mf` (aliases: `mf` = Module Federation, `microfrontends` = `mf`, `combined` = `single-spa+mf`). Interactive selection is now a need-driven two-step flow.
+
+### Changed
+- **Microfrontend doctrine reconciled across the whole package** (evidence-based, 2026): **Module Federation** is the default for homogeneous React; **Single-SPA** orchestrates mixed frameworks / hard isolation; the two combine. `web/_base/frontend-architecture.md` is the single source of truth — a decision tree plus each track's backend implications.
+- `frontend-standards.md` §2.2/§2.3 rewritten to match (removed the contradictory "Single-SPA is the default for all microfrontends" rule); fixed a duplicate section number (→ §2.4) and a dead link to the removed `vite-config-standard.md`; updated versions (React 19, Vite 7, Zustand 5).
+- `frontend-standards.md` **fully translated to English** (user-facing UI string literals stay Spanish per the language rule). The package documentation is now English throughout.
+- `bff-standard.md` expanded: BFF scoping **per client type** and **per microfrontend / vertical slice**, owned by the frontend team.
+- Repositioned the monolith decision in `choosing-distributed-architecture.md` to link the new standard; cross-linked the platform-architecture map across frontend and backend docs.
+
 ## [2.1.1] - 2026-06
 
 ### Docs
@@ -58,6 +72,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.2.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.2.0
 [2.1.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.1
 [2.1.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.1.0
 [2.0.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.0.1

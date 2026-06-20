@@ -8,7 +8,7 @@ updated: 2026-06
 
 # Single-SPA Microfrontends Standard
 
-> **Choose this track when** you need to compose microfrontends that are **independently deployed** and possibly built with **different frameworks/versions** (React + Angular + legacy), or when each module must have a **fully isolated lifecycle** (its own bootstrap/mount/unmount, CSS injected and removed on navigation). If your whole frontend is a single homogeneous React stack, prefer the [Module Federation track](../microfrontends/module-federation-standard.md) instead — it shares dependencies more efficiently and gives end-to-end typing.
+> **Choose this track when** you need to compose microfrontends that are **independently deployed** and possibly built with **different frameworks/versions** (React + Angular + legacy), or when each module must have a **fully isolated lifecycle** (its own bootstrap/mount/unmount, CSS injected and removed on navigation). If your whole frontend is a single homogeneous React stack, prefer the [Module Federation track](../microfrontends/module-federation-standard.md) instead — it shares dependencies more efficiently and gives end-to-end typing. The two also **combine**: use Single-SPA as the orchestrator and Module Federation to share code across the apps. See [`frontend-architecture.md`](../_base/frontend-architecture.md) for the full decision tree.
 
 Single-SPA is a **top-level router/orchestrator**: a thin shell registers applications and decides which one is active for a given route. Each microfrontend exposes `bootstrap`/`mount`/`unmount` lifecycles.
 
