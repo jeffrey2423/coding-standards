@@ -1,7 +1,7 @@
 ---
 title: Frontend Architecture
 platform: web
-load_when: "Any web work — defines folder structure, routing conventions, and how to pick a web track."
+load_when: "Any web work — the web architecture, folder structure, and routing conventions."
 updated: 2026-06
 ---
 

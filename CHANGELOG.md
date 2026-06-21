@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.5.2] - 2026-06
+
+### Fixed
+- Neutralized choice-implying metadata that the decision-aware engine doesn't touch (front-matter `load_when` feeds `INDEX.md`, and titles aren't conditional): `choosing-distributed-architecture.md` is now titled **Distributed Architecture** with a map-style `load_when`, and `frontend-architecture.md`'s `load_when` no longer says "how to pick a web track". A committed install no longer reads as if a decision is still open.
+
 ## [2.5.1] - 2026-06
 
 ### Docs
@@ -115,6 +120,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.5.2]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.2
 [2.5.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.1
 [2.5.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.0
 [2.4.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.4.0
