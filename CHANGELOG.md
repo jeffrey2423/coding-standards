@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-06
+
+### Docs
+- Added a **"Why this exists"** section to the README that states the package's core principle: architectural decisions are made once at install time and the installed docs commit to them, so AI agents read one consistent source of truth instead of re-opening settled decisions.
+
 ## [2.5.0] - 2026-06
 
 ### Added
@@ -110,6 +115,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.5.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.1
 [2.5.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.0
 [2.4.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.4.0
 [2.3.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.1
