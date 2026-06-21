@@ -6,6 +6,15 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-06
+
+### Added
+- **Decision-aware installs.** The installer now commits the documents to the architecture chosen at install time, so AI agents reading them don't diverge back to options the user didn't pick. Source docs wrap option-specific content in conditional markers — block `<!-- when:arch=monolith -->…<!-- /when -->` and inline `| row |<!-- when:web=spa -->` — and the installer strips the content for any non-selected path (markers are HTML comments, invisible when rendered). Conditions support `arch`/`web`/`backend`/`mobile`, comma-OR, `!=`, and nesting.
+
+### Changed
+- Authored the decision-bearing meta docs (`platform-architecture.md`, `choosing-distributed-architecture.md`, `frontend-architecture.md`, `frontend-standards.md` §2.2–2.3) with conditional markers: a microservices + Module Federation install no longer carries "start with a monolith / SPA" guidance, decision trees for unchosen tracks, or comparison rows for paths not installed. A monolith + SPA install likewise drops the microservices/MFE material.
+- Documented the conditional-content convention in `CONTRIBUTING.md`.
+
 ## [2.4.0] - 2026-06
 
 ### Fixed
@@ -101,6 +110,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.5.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.0
 [2.4.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.4.0
 [2.3.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.1
 [2.3.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.3.0
