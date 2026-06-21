@@ -1,12 +1,12 @@
 ---
-title: Choosing a Distributed Architecture
+title: Distributed Architecture
 platform: backend
 track: distributed-architecture
-load_when: "Starting a backend platform or deciding which distributed-architecture standards apply — monolith vs microservices, and which edge/integration layer (gateway, public facade, BFF) you actually need."
+load_when: "The distributed-architecture map — services, the edge layer (gateway, public facade, BFF), and how the backend composes with the frontend."
 updated: 2026-06
 ---
 
-# Choosing a Distributed Architecture
+# Distributed Architecture
 
 The docs in this folder are **independent options, not a default-plus-exceptions stack**. Pick each by a concrete need — the same discipline the web side applies to its tracks (see [`web/_base/frontend-architecture.md`](../../web/_base/frontend-architecture.md)). Adopting all of it speculatively is the most common and most expensive mistake.
 
