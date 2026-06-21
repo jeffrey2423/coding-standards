@@ -53,6 +53,11 @@ node /path/to/coding-standards/bin/cli.js --help
    - **Never use relative references** like "see the table above", "both docs above", or "the standard below" — they orphan as soon as the thing they point to is pruned. Name the target with its own link instead.
    - A row that depends on **multiple** other standards should link to **all** of them, so it prunes when any is absent (e.g. a "Combined" option linking to both tracks it combines).
    - Decision/comparison tables prune to the user's selection; keep each row independent of its siblings.
+8. **Commit content to the install-time decision** so AI agents don't diverge. The installer is decision-aware: option-specific content for a path the user did **not** select is removed. Wrap such content in conditional markers (HTML comments — invisible when rendered):
+   - **Block** (multi-line: paragraphs, blockquotes, sections): `<!-- when:arch=monolith -->` … `<!-- /when -->`.
+   - **Inline** (a single line or table row): put the marker at the end of the line, e.g. `| **SPA** | … |<!-- when:web=spa -->`. Multiple inline markers on one line are ANDed.
+   - **Conditions:** `dim=val[,val]` (OR) or `dim!=val`. Dims: `arch` (doc id), `web` (`spa`/`single-spa`/`mf`), `backend`, `mobile`. A row that links to another standard is also pruned automatically when that standard isn't installed — so reserve markers for content **without** such a link (decision trees, no-link comparison rows, "consider the simpler option" guidance).
+   - Never leave content that recommends a path the user didn't choose (e.g. "start with a monolith" in a microservices-only install).
 
 ## Pull requests
 
