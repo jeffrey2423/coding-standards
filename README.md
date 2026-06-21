@@ -12,6 +12,18 @@ Modern, **AI-ready** coding standards, architectural patterns and technical conv
 
 Designed to be consumed by **AI coding agents** (Claude Code, Cursor, Copilot) as much as by humans: every document carries `load_when` front-matter, and the installer generates an `INDEX.md` telling the agent exactly which standards are active.
 
+## Why this exists
+
+**Architectural decisions are made once, at install time — and the installed documents commit to them, so AI agents don't diverge.**
+
+A coding agent is only as consistent as the context it reads. If the standards still describe every option ("you could start with a monolith… or go microservices… SPA or microfrontends…"), an agent will happily re-open decisions you already made and wander toward a different design each session. So the installer doesn't just copy files — it **bakes your decision into the docs**:
+
+- You choose your architecture through the prompts (or flags): monolith vs microservices, SPA vs Module Federation vs Single-SPA, which edge layers, and so on.
+- The installer then **removes the guidance for paths you didn't pick** — no "start with a monolith" left in a microservices install, no SPA decision branch in a Module Federation one, no broken links or pointers to standards you didn't select.
+- What lands in `coding-standards/` is a **single, internally consistent source of truth** for *your* project. Point your agent at `INDEX.md` and it builds along one clear architecture instead of guessing.
+
+The library stays generic — a different project that picks a monolith + SPA gets docs committed to *that* decision. Commitment lives in each install, not in the source. (Contributors: see the conditional-content convention in [CONTRIBUTING.md](CONTRIBUTING.md).)
+
 ## Quick Start
 
 Pick exactly the standards your project needs — interactively:
