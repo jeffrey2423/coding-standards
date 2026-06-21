@@ -15,10 +15,7 @@ This is the **north-star** map: how every layer of the platform fits together. T
 
 ```
         ┌───────────────────────────────────────────────────────┐
-        │  SHELL                                                 │
-        │  Module Federation: single shell, products = layouts,  │
-        │                     capabilities = remote MFEs         │
-        │  Single-SPA: thin root orchestrating independent apps  │
+        │  SHELL — composes the microfrontends into the app      │
         └───────────────┬───────────────────────────────────────┘
    each capability / app = a VERTICAL SLICE owned by one team
         ┌──────────┐      ┌──────────┐      ┌──────────┐
@@ -53,16 +50,18 @@ This is the **north-star** map: how every layer of the platform fits together. T
 - **The BFF belongs to the microfrontend, not the service tier.** It is a frontend-team-owned edge that shapes data for *its* UI. It holds **no business rules** (those live in the microservice) and owns **no database**. It shields the UI from backend churn: a downstream change touches the BFF, not the MFE.
 - **The gateway is foundational; BFFs sit behind it.** The gateway authenticates once and routes; a request reaching a BFF or service is already authenticated. BFFs are internal services behind the gateway, not a second public edge.
 - **Services talk to each other by events, not through BFFs.** Cross-context coordination is async (sagas/events) at the service tier — see [`event-driven.md`](../backend/architecture/event-driven.md). A BFF aggregates **reads** for a screen; it never becomes a hub for service-to-service business flow.
+<!-- when:arch=monolith -->
 - **Start as a modular monolith.** Before slices exist, one well-bounded deployable is the right call. Split a context into its own slice when a real force (independent scaling, team autonomy) appears. See [`monolith-standard.md`](../backend/architecture/monolith-standard.md) and the [decision map](../backend/architecture/choosing-distributed-architecture.md).
+<!-- /when -->
 
 ## Scaling the model by frontend track
 
 | Track | Slice composition |
 |---|---|
-| **SPA** | One slice (or a few), one team. Often no BFF; talk to the gateway directly. The whole "platform" may be a modular monolith. |
-| **Module Federation** | Each **capability** (remote MFE) is a slice with its team, its optional BFF, and its context's microservice(s). The shell composes them; a thin shell service serves the license/manifest. |
-| **Single-SPA** | Each **app** is a slice, commonly with **its own BFF**. The root orchestrates; frameworks may differ per app. |
-| **Combined** | Single-SPA orchestrates the apps; Module Federation shares code across slices. BFF-per-slice unchanged. |
+| **SPA** | One slice (or a few), one team. Often no BFF; talk to the gateway directly. The whole "platform" may be a modular monolith. | <!-- when:web=spa -->
+| **Module Federation** | Each **capability** (remote MFE) is a slice with its team, its optional BFF, and its context's microservice(s). The shell composes them; a thin shell service serves the license/manifest. | <!-- when:web=mf -->
+| **Single-SPA** | Each **app** is a slice, commonly with **its own BFF**. The root orchestrates; frameworks may differ per app. | <!-- when:web=single-spa -->
+| **Combined** | Single-SPA orchestrates the apps; Module Federation shares code across slices. BFF-per-slice unchanged. | <!-- when:web=single-spa --><!-- when:web=mf -->
 
 ## Anti-patterns
 
@@ -70,4 +69,6 @@ This is the **north-star** map: how every layer of the platform fits together. T
 - **A BFF with business rules** — it has quietly become a microservice without a domain. Push logic down.
 - **A shared "BFF" for every client** — that is just the API gateway with extra steps. A BFF is per experience/slice.
 - **Microfrontend split without backend split** — independent UI deploys that all hit one shared backend monolith reintroduce the coupling microfrontends were meant to remove.
+<!-- when:arch=monolith -->
 - **Adopting the whole stack on day one** — shell + remotes + per-slice BFFs + microservices for a one-team product. Start monolith-first; grow into slices.
+<!-- /when -->

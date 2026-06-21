@@ -100,22 +100,23 @@ The frontend stack is the same across every track; what changes is **composition
 
 | Scenario | Choice | Reason |
 |---|---|---|
-| **Default** | Vite + TanStack Router (SPA) | Best DX, type-safety, single deployable for one cohesive app |
-| **Microfrontends — homogeneous React** | Module Federation 2.0 (`@module-federation/enhanced`) | 2026 de-facto standard: singleton sharing, end-to-end typing, license-gated runtime composition |
-| **Microfrontends — mixed frameworks / hard isolation** | Single-SPA | Framework-agnostic orchestration, isolated lifecycle (bootstrap/mount/unmount), CSS isolation |
-| **Both** | Single-SPA + Module Federation | Single-SPA orchestrates apps; Module Federation shares code between them |
+| **SPA** | Vite + TanStack Router | Best DX, type-safety, single deployable for one cohesive app |<!-- when:web=spa -->
+| **Microfrontends — homogeneous React** | Module Federation 2.0 (`@module-federation/enhanced`) | 2026 de-facto standard: singleton sharing, end-to-end typing, license-gated runtime composition |<!-- when:web=mf -->
+| **Microfrontends — mixed frameworks / hard isolation** | Single-SPA | Framework-agnostic orchestration, isolated lifecycle (bootstrap/mount/unmount), CSS isolation |<!-- when:web=single-spa -->
+| **Both** | Single-SPA + Module Federation | Single-SPA orchestrates apps; Module Federation shares code between them |<!-- when:web=single-spa --><!-- when:web=mf -->
 
-### 2.3 Microfrontends: Module Federation and Single-SPA
+<!-- when:web=mf,single-spa -->
+### 2.3 Microfrontends
 
-> Microfrontends are **need-driven**, not a default. Don't adopt them speculatively (industry adoption had a documented "reality check"). For a homogeneous React platform, **Module Federation** is the default; **Single-SPA** is the orchestrator when you have mixed frameworks or need hard lifecycle isolation. They are **not mutually exclusive** — Single-SPA orchestrates which app is active; Module Federation shares code/modules at runtime, and a large platform can use both.
+<!-- when:web=mf -->
+This platform uses **Module Federation 2.0** (`@module-federation/enhanced`, + `@module-federation/vite`) — homogeneous React, a single shell with products as router layouts and capabilities as remote MFEs, and license-gated runtime composition.
+<!-- /when -->
+<!-- when:web=single-spa -->
+This platform uses **Single-SPA** (`vite-plugin-single-spa` + `single-spa-react`) — a framework-agnostic orchestrator with isolated per-module lifecycle (bootstrap/mount/unmount) and CSS isolation.
+<!-- /when -->
 
-| Approach | Technology | Use |
-|---|---|---|
-| **Homogeneous React MFEs** | `@module-federation/enhanced` (+ `@module-federation/vite`) | ✅ Default for React microfrontend platforms — single shell, products as layouts, capabilities as remotes |
-| **Mixed-framework / isolated MFEs** | `vite-plugin-single-spa` + `single-spa-react` | Framework coexistence, explicit lifecycle, CSS isolation |
-| **Shared modules across apps** | Module Federation layered onto a Single-SPA shell | Cross-app code sharing without duplicating dependencies |
-
-The full track decision (SPA vs Module Federation vs Single-SPA vs combined) and its backend implications live in [`frontend-architecture.md`](frontend-architecture.md). See also [`../microfrontends/module-federation-standard.md`](../microfrontends/module-federation-standard.md) and [`../single-spa/single-spa-standard.md`](../single-spa/single-spa-standard.md) for the per-track standards.
+See [`frontend-architecture.md`](frontend-architecture.md) for the web-architecture decision and its backend implications.
+<!-- /when -->
 
 ### 2.4 Development Tools
 

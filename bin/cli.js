@@ -131,6 +131,75 @@ function copySources(sources) {
   return [...new Set(copied)].sort();
 }
 
+// ── Decision-aware conditional content ──────────────────────────────────────
+// Decisions are made at install time; the installed docs must commit to them so
+// AI agents don't diverge. Source docs wrap option-specific content in markers:
+//   block:  <!-- when:arch=monolith -->  …lines…  <!-- /when -->
+//   inline: | **SPA** | … |   <!-- when:web=spa -->   (drops just that line)
+// Conditions: dim=val[,val] (OR) or dim!=val. Dims: arch, web, backend, mobile.
+// Multiple inline markers on one line are ANDed. Markers are HTML comments, so
+// they never render even when kept.
+function selectionHas(sel, dim, val) {
+  switch (dim) {
+    case "arch": return sel.arch.includes(val);
+    case "web": return webTrackDirs(sel.web).includes(val === "mf" ? "microfrontends" : val);
+    case "backend": return !!sel.backend;
+    case "mobile": return sel.mobile.includes(val);
+    default: return false;
+  }
+}
+
+function evalCondition(sel, cond) {
+  const ne = cond.match(/^(\w+)\s*!=\s*(.+)$/);
+  if (ne) return !ne[2].split(",").some((v) => selectionHas(sel, ne[1], v.trim()));
+  const eq = cond.match(/^(\w+)\s*=\s*(.+)$/);
+  if (eq) return eq[2].split(",").some((v) => selectionHas(sel, eq[1], v.trim()));
+  const bare = cond.match(/^(\w+)$/);
+  if (bare) return selectionHas(sel, bare[1], true);
+  return true;
+}
+
+function applyConditionalBlocks(copied, sel) {
+  const reOpen = /^<!--\s*when:(.+?)\s*-->$/;
+  const reClose = /^<!--\s*\/when\s*-->$/;
+  const reInlineAll = /<!--\s*when:(.+?)\s*-->/g;
+
+  for (const rel of copied) {
+    const abs = path.join(TARGET_DIR, rel);
+    const lines = fs.readFileSync(abs, "utf8").split("\n");
+    const out = [];
+    const skipStack = []; // each entry: true while inside a block whose condition is false
+    let changed = false;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const mo = trimmed.match(reOpen);
+      if (mo) { skipStack.push(!evalCondition(sel, mo[1].trim())); changed = true; continue; }
+      if (reClose.test(trimmed)) { skipStack.pop(); changed = true; continue; }
+      if (skipStack.some(Boolean)) { changed = true; continue; } // inside a dropped block
+
+      if (line.includes("<!--")) {
+        const conds = [];
+        let m;
+        reInlineAll.lastIndex = 0;
+        while ((m = reInlineAll.exec(line)) !== null) conds.push(m[1].trim());
+        if (conds.length) {
+          changed = true;
+          if (!conds.every((c) => evalCondition(sel, c))) continue; // drop this line
+          out.push(line.replace(reInlineAll, "").replace(/\s+$/, "")); // keep line, strip markers
+          continue;
+        }
+      }
+      out.push(line);
+    }
+
+    if (changed) {
+      const text = dropEmptyHeadings(dropOrphanTableHeaders(out)).join("\n").replace(/\n{3,}/g, "\n\n");
+      fs.writeFileSync(abs, text);
+    }
+  }
+}
+
 // ── Prune references to standards that weren't installed ─────────────────────
 // A partial selection leaves cross-doc links pointing at standards that aren't
 // on disk. Policy: the installed set must not reference non-installed standards
@@ -488,6 +557,7 @@ async function main() {
   }
 
   const copied = copySources(sources);
+  applyConditionalBlocks(copied, sel);
   pruneForeignReferences(copied);
   generateIndex(copied, sel);
   writeManifest(copied, sel);

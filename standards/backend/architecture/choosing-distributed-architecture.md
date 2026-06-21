@@ -12,6 +12,7 @@ The docs in this folder are **independent options, not a default-plus-exceptions
 
 This is the entry point: it tells you **what to choose and when**, then points at the doc that tells you **how**. For how the backend composes with the frontend end-to-end (microfrontend + BFF + microservice as one team-owned vertical slice), see [`core/platform-architecture.md`](../../core/platform-architecture.md).
 
+<!-- when:arch=monolith -->
 ## Step 0 — Do you even need microservices?
 
 Distribution buys independent deploy/scale per domain and team autonomy. It costs network failure modes, eventual consistency, and operational overhead. Don't pay it until a concrete force demands it.
@@ -22,6 +23,7 @@ Distribution buys independent deploy/scale per domain and team autonomy. It cost
 | Distinct domains with different scaling/availability/team ownership | **Microservices** → [`microservice-anatomy.md`](microservice-anatomy.md) | The boundaries already exist; distribution makes them enforceable. |
 
 > A modular monolith with clean bounded contexts is a **legitimate destination**, not a failure to migrate. Microservices are an option you select, not a maturity badge.
+<!-- /when -->
 
 ## The edge / integration layer — three distinct concerns
 
@@ -61,7 +63,9 @@ Service ↔ service communication is a **separate** decision — async by defaul
 
 ## Anti-patterns
 
+<!-- when:arch=monolith -->
 - **Adopting the whole track speculatively** — microservices + gateway + public facade + BFF on day one for a product with one team and no third parties. Start with the modular monolith; add each piece when its trigger fires.
+<!-- /when -->
 - **Conflating gateway, public facade, and BFF** — they answer different questions; installing one does not imply the others.
 - **A BFF that grows domain logic** — it becomes a distributed monolith's hub. Business rules live in the owning microservice.
 - **A "public facade" with no third parties** — that's just your gateway with extra ceremony.
