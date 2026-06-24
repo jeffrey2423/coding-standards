@@ -28,7 +28,7 @@ Rules are imperative bullets, often paired with **DO / DON'T** examples. Pattern
 ## Agent guardrails
 
 - **MUST NOT** introduce a dependency, framework, or pattern that contradicts the project's active standards. If the task seems to require one, ask first.
-- **MUST** follow the [language rule](coding-conventions.md): code/comments/logs in English, user-facing text in Spanish.
+- **MUST** follow the [language rule](coding-conventions.md): code/comments/logs in English, user-facing text routed through i18n to the product's configured locale.
 - **MUST** write tests per [`testing-strategy.md`](testing-strategy.md) and never claim untested code is tested.
 - **MUST** place code where the architecture dictates (see [`clean-architecture-ddd.md`](clean-architecture-ddd.md)) instead of inventing new top-level structure.
 - **MUST** verify that any file, symbol, version, or flag named in a standard still exists in the codebase before acting on it — standards can drift from code.
