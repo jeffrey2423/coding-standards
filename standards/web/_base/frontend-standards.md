@@ -679,7 +679,7 @@ describe('CartItem', () => {
 
 ## 8. Accessibility
 
-### 8.1 WCAG 2.1 AA Compliance
+### 8.1 WCAG 2.2 AA Compliance
 
 | Requirement | Implementation |
 |-----------|----------------|

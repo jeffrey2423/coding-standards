@@ -11,6 +11,7 @@ The approved frontend toolchain. Use these by default; deviations need a stated 
 
 | Category | Technology | Version | Notes |
 |---|---|---|---|
+| Runtime | Node.js | 24 LTS | toolchain runtime; clears Vite 7's 20.19+/22.12+ floor |
 | Bundler | Vite | 7+ | native ESM, fast HMR |
 | Framework | React | 19 (18+ supported) | functional components + hooks |
 | Language | TypeScript | 5+ | `strict` mode mandatory |

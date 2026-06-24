@@ -139,7 +139,7 @@ Flutter 3.44 (Riverpod 3 · GoRouter · Material 3) · React Native 0.85 (Expo S
 6. **UUID (uuidv7) primary keys** — distributed-system friendly.
 7. **i18n by default** — user-facing text follows the product's configured locale via the i18n layer; code, identifiers, comments, and docs are always English.
 8. **Contracts are the product** — public, versioned, backward-compatible.
-9. **Accessibility first** — WCAG 2.1 AA.
+9. **Accessibility first** — WCAG 2.2 AA.
 10. **AI-ready** — every standard is loadable on demand via `INDEX.md` and `load_when` front-matter.
 11. **Open source only** — every dependency uses a permissive OSS license; no commercial or revenue-gated libraries.
 

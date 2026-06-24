@@ -186,6 +186,17 @@ Module Federation 2.0 can download a remote's **TypeScript types at build time**
 - **MUST** run contract tests in CI between shell and remotes.
 - **SHOULD** deprecate props with a window before removal; bump `@org/contracts` major on breaking change.
 
+## Package publishing (private registry)
+
+Shared packages (`@org/contracts`, `@org/ui-kit`, `@org/license`) are **polyrepo + published to a private npm registry, consumed by semver** — not a prod monorepo workspace.
+
+- **Registry = a *private* npm registry, NEVER public npmjs** (these packages are proprietary). Two viable options:
+  - **Verdaccio** (OSS, MIT) — self-hosted, runs in a container, fully npm-protocol compatible. The **OSS-first choice**; it lets you keep **any scope** (`@org`) independent of where the repos live. Cost: a small hosted instance reachable by CI/prod (local is a single `docker run`).
+  - **GitHub Packages** — free for private packages, zero infra to run. **Caveat: the npm scope is forced to equal the GitHub org name** (the org name *is* your scope), so a matching org must exist before publishing and the scope is not freely chosen.
+- **`.npmrc`** (committed, token-free): point the scope at the registry — e.g. `@org:registry=https://npm.pkg.github.com` (GitHub Packages) or your Verdaccio URL. Auth comes from the environment (`NODE_AUTH_TOKEN` / `GITHUB_TOKEN`) — **never commit a token**. CI publishes with a scoped token (GitHub: the built-in `GITHUB_TOKEN`, `permissions: packages: write`).
+- **Versioning:** semver; a breaking change is a new major (consumers pin `^x`). MF 2.0 `dts` surfaces contract breaks at build time; back it with contract tests in CI.
+- **Inner loop:** to avoid publishing on every change while iterating, link locally (`pnpm link` / `file:`) and publish versioned artifacts only for integration/CI. Trade-off accepted: cross-repo bumps are coordinated, not atomic.
+
 ## Risks & mitigations
 
 | Risk | Mitigation |

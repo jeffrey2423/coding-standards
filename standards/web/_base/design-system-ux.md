@@ -24,7 +24,7 @@ Project assets are centralized in the [resources/](../../../resources/) director
 
 ```
 resources/
-├── fonts/          # Inter font family files
+├── fonts/          # Inter variable font (single asset → weights 400/500/600/700)
 └── images/         # Brand assets, logos, and graphics
 ```
 
@@ -261,25 +261,23 @@ module.exports = {
 
 ### Typography System
 
-#### Font Configuration
+One typeface does the work: **Inter** (variable). Hierarchy comes from **weight and size** — promote with weight before size. All four weights come from the single variable asset; never map 500/600 onto 400/700.
+
 ```css
 :root {
-  /* Brand Fonts - 3 weights available */
-  --font-primary: 'Inter_18pt-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-light: 'Inter_18pt-Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-bold: 'Inter_18pt-Bold', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-  
-  /* Tailwind font weight mapping */
-  --font-weight-light: 300;    /* Inter_18pt-Light */
-  --font-weight-normal: 400;   /* Inter_18pt-Regular */
-  --font-weight-medium: 400;   /* Inter_18pt-Regular */
-  --font-weight-semibold: 700; /* Inter_18pt-Bold */
-  --font-weight-bold: 700;     /* Inter_18pt-Bold */
-  --font-weight-extrabold: 700; /* Inter_18pt-Bold */
-  --font-weight-black: 700;    /* Inter_18pt-Bold */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Mono + tabular-nums for ALL money / time / durations / counts */
+  --font-mono: '"JetBrains Mono"', ui-monospace, 'SF Mono', Monaco, Consolas, monospace;
+
+  /* Weight scale — all four provided by the single Inter variable font */
+  --font-weight-regular:  400;   /* Inter Regular  */
+  --font-weight-medium:   500;   /* Inter Medium   */
+  --font-weight-semibold: 600;   /* Inter SemiBold */
+  --font-weight-bold:     700;   /* Inter Bold     */
 }
 ```
+
+> **`tabular-nums` is a hard rule.** All money, time slots, durations, and counts use `font-mono` with `tabular-nums` so digits align on their columns and values don't jitter as they update.
 
 #### Typography Scale
 ```yaml
@@ -296,7 +294,7 @@ typography:
     paragraph: "text-base font-normal leading-relaxed"
     large: "text-lg font-normal leading-relaxed"
     small: "text-sm font-normal leading-normal"
-    caption: "text-xs font-light leading-normal"
+    caption: "text-xs font-normal leading-normal"
 
   interactive:
     label: "text-sm font-medium leading-normal"
@@ -307,6 +305,7 @@ typography:
 
   utility:
     code: "text-sm font-normal leading-normal font-mono"
+    numeric: "font-mono tabular-nums"   # money / time / durations / counts
     badge: "text-xs font-semibold leading-none"
     tooltip: "text-sm font-normal leading-snug"
 ```
@@ -350,21 +349,34 @@ skeleton:
 ## Standards & Guidelines
 
 ### Accessibility
+
+Baseline **WCAG 2.2 AA** for every component.
+
 ```yaml
 accessibility:
-  color_contrast: "4.5:1 minimum (WCAG 2.1 AA)"
-  large_text_contrast: "3.1:1 minimum"
-  focus_indicators: "2px solid var(--color-primary-500)"
-  touch_targets: "44px minimum"
+  color_contrast: "4.5:1 minimum text (WCAG 2.2 AA)"
+  large_text_contrast: "3:1 minimum (UI components + large text)"
+  focus_indicators: "2px ring + 2px offset; focus ring per theme, >=3:1 against its surface"
+  target_minimum_2_5_8: "24x24px minimum hit area on ALL surfaces (WCAG 2.2 §2.5.8); 44x44px on touch-first / PWA surfaces"
+  dragging_movements_2_5_7: "Any drag interaction MUST have a non-drag keyboard/pointer alternative (WCAG 2.2 §2.5.7)"
+  touch_targets: "44x44px minimum on touch-first surfaces"
   font_size_minimum: "16px"
   line_length_maximum: "75ch"
-  
+
 requirements:
   landmarks: true
   headings: true
   labels: true
   alt_text: true
   skip_links: true
+
+floor:
+  status_not_color_alone: "Status is NEVER conveyed by color alone — always pair color with an icon + text label."
+  focus_ring_per_theme: "Focus ring brightens on dark surfaces so it keeps >=3:1 against raised dark backgrounds."
+  reduced_motion: "Honor prefers-reduced-motion — non-essential transitions/animations degrade to instant or opacity-only."
+  forms: "Every input programmatically labeled (<label for> / aria-labelledby); required signaled by text + aria-required (never color alone); errors associated via aria-describedby and announced; focus moves to the first invalid field on submit."
+  live_region: "Frequent/streaming updates announce via a single debounced aria-live='polite' region as a coalesced summary — never one announcement per event/DOM mutation."
+  keyboard_nav: "All interactive surfaces fully keyboard-operable (arrows + Enter; Esc closes the topmost sheet/modal); focus order follows reading order; modals/sheets trap and restore focus."
 ```
 
 ### Performance Targets
@@ -401,6 +413,14 @@ naming:
   directories: "kebab-case"
   assets: "kebab-case"
 ```
+
+### Design-system package & Storybook
+
+The design system ships as a **versioned package** (`@org/ui-kit`) — the single source of token + primitive truth, consumed by every product/MFE.
+
+- **Tokens are typed data with explicit light + dark values** (e.g. `{ light, dark }`), never raw hex scattered across components; themes resolve via the `data-theme` attribute (or the Tailwind `dark` class).
+- **Guardrail tests:** assert the non-obvious decisions in unit tests — WCAG contrast ratios (white-on-primary-fill ≥ 4.5:1, danger fill, **and negative checks** proving a remapped dark hue is *not* used as a white-text fill) and any locale formatters.
+- **Storybook (MUST for the design-system package):** **Storybook 9 + the Vite builder**, with **`@storybook/addon-a11y`** (axe — enforces the WCAG 2.2 AA floor on every story) and a light/dark theme toggle. **Every primitive gets a story** covering its variants/states, plus **Foundation stories** (colors, typography, spacing, shape, elevation) so tokens are visible without a component. The static build is publishable for the team.
 
 ---
 
