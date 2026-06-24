@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.6.1] - 2026-06
+
+### Fixed
+- Aligned the **language rule** across the whole package with the i18n policy adopted in 2.3.0. `core/coding-conventions.md` and `core/ai-collaboration.md` (both **always installed**) and the README's key-principles list still mandated *"user-facing text in Spanish"*, contradicting `frontend-standards.md` §13 (locale-agnostic since 2.3.0). All three now state the same rule: user-facing text is routed through the i18n layer to the product's **configured locale**; code, identifiers, comments, logs and docs are always English. A committed install no longer carries a Spanish-only UI mandate alongside a locale-agnostic frontend standard.
+
 ## [2.6.0] - 2026-06
 
 ### Added
@@ -126,6 +131,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.6.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.6.1
 [2.6.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.6.0
 [2.5.2]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.2
 [2.5.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.1

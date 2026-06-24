@@ -12,8 +12,8 @@ Cross-cutting conventions that apply to every platform. Platform docs may add sp
 ## Language rule
 
 - **MUST** write all **code, identifiers, comments, logs, commit messages and technical docs in English**.
-- **MUST** write all **user-visible text in Spanish** (UI labels, validation messages shown to users, emails). Use i18n/l10n resources — never hardcode user-facing strings in components.
-- **Rationale:** English code keeps the codebase universally maintainable; Spanish UI serves the product's users.
+- **MUST** route all **user-facing text** (UI labels, validation messages shown to users, emails, notifications) through the **i18n/l10n layer** so the rendered language is the product's **configured locale** — a configuration choice, never hardcoded in components.
+- **Rationale:** English code keeps the codebase universally maintainable; i18n keeps the rendered language a configuration choice, so the product can serve — and add — any locale without touching code.
 
 ## Naming
 
