@@ -6,6 +6,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-06
+
+### Added
+- **Module Federation — package publishing (private registry).** New section in `web/microfrontends/module-federation-standard.md` for how shared packages (`@org/contracts`, `@org/ui-kit`, `@org/license`) are published and consumed: polyrepo + private npm registry by semver (Verdaccio vs GitHub Packages, with the GitHub-Packages scope-equals-org caveat), token-free committed `.npmrc` with env-supplied auth, semver/major-on-break versioning backed by MF 2.0 `dts` + contract tests, and a local-link inner loop.
+- **Design-system package & Storybook** guidance in `web/_base/design-system-ux.md`: the design system ships as a versioned `@org/ui-kit`; tokens are typed data with explicit light+dark values; guardrail unit tests assert contrast ratios (including negative checks); Storybook 9 + Vite builder + `@storybook/addon-a11y`, a story per primitive, and Foundation stories.
+- **Accessibility floor** in `web/_base/design-system-ux.md`: status-never-by-color-alone, per-theme focus ring, reduced-motion, programmatic form labeling/error association, coalesced `aria-live` for frequent updates, and full keyboard operability with focus trap/restore.
+
+### Changed
+- **Accessibility baseline raised to WCAG 2.2 AA** across the web track (`design-system-ux.md` and `frontend-architecture.md`, previously 2.1 AA), adding §2.5.8 Target Minimum (24×24px on all surfaces; 44×44px touch-first) and §2.5.7 Dragging Movements (non-drag alternative required). Fixed the large-text contrast figure (3:1, was 3.1:1).
+- **Typography uses the Inter variable font** in `design-system-ux.md`: a single asset provides real 400/500/600/700 weights, replacing the degenerate mapping that collapsed medium→400 and semibold→700. Added a hard `tabular-nums` rule (and a `numeric` type token) for money/time/durations/counts.
+- **Web technology stack** (`web/_base/technology-stack.md`) now pins **Node.js 24 LTS** as the toolchain runtime (clears Vite 7's 20.19+/22.12+ floor).
+
 ## [2.6.1] - 2026-06
 
 ### Fixed
@@ -131,6 +143,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.7.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.7.0
 [2.6.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.6.1
 [2.6.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.6.0
 [2.5.2]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.2

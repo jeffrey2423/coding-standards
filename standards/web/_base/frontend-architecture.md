@@ -77,7 +77,7 @@ src/
 - **MUST** keep `routes/` for route definitions only; business logic lives in `modules/`.
 - **MUST** split state by ownership: **Zustand** (global client) / **TanStack Query** (server) / `useState` (local).
 - **MUST** keep `routeTree.gen.ts` untouched (auto-generated).
-- **MUST** meet WCAG 2.1 AA in every component.
+- **MUST** meet WCAG 2.2 AA in every component (see [`design-system-ux.md`](design-system-ux.md) for the full accessibility floor).
 - **SHOULD** lazy-load routes (automatic with TanStack Router `autoCodeSplitting`).
 - **SHOULD** build complex UI by composing small reusable components.
 
