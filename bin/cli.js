@@ -35,6 +35,7 @@ const ARCH_DOCS = [
   { id: "api", file: "public-api-facade.md", label: "Public API facade (gateway, webhooks)" },
   { id: "bff", file: "bff-standard.md", label: "Backend for Frontend (BFF)" },
   { id: "shared", file: "shared-vs-owned.md", label: "Shared vs owned components" },
+  { id: "deployment", file: "deployment-and-environments.md", label: "Deployment & environments (topology, migrations, secrets, IaC)" },
 ];
 
 // ── Web track resolution ─────────────────────────────────────────────────────

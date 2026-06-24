@@ -6,6 +6,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-06
+
+### Added
+- **Deployment & environments standard** (`backend/architecture/deployment-and-environments.md`) — opt-in distributed-architecture doc (arch id `deployment`) covering the laptop→production path: logical-vs-physical database separation, expand-contract migrations as a dedicated pre-rollout step, zero-downtime release strategy (rolling/blue-green/canary) with graceful shutdown and health probes, feature flags to decouple deploy from release, secrets management (secret manager + envelope encryption for per-customer secrets), three-layer dev/prod parity from one canonical packaging artifact, IaC separated from app deploy, and the OSS relicensing trap. Selectable in interactive mode, `--arch=deployment`, and `--all`.
+- The doc is **decision-aware**: a monolith install reads the single-deployable topology (one artifact, one database, simpler substrate, feature-flag-led releases); a microservices install reads the distributed material (database-per-service, per-service migration history, local-cluster parity gate); multitenancy-only content (pooled-vs-routing) is gated to `arch=multitenancy`.
+
 ## [2.5.2] - 2026-06
 
 ### Fixed
@@ -120,6 +126,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Initial release: flat library of coding standards copied wholesale into `coding-standards/`.
 
+[2.6.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.6.0
 [2.5.2]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.2
 [2.5.1]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.1
 [2.5.0]: https://github.com/jeffrey2423/coding-standards/releases/tag/v2.5.0
