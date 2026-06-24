@@ -92,7 +92,8 @@ standards/
 │       ├── event-driven.md
 │       ├── public-api-facade.md
 │       ├── bff-standard.md
-│       └── shared-vs-owned.md
+│       ├── shared-vs-owned.md
+│       └── deployment-and-environments.md   # laptop→prod: topology, migrations, secrets, IaC
 ├── web/
 │   ├── _base/                  # frontend architecture, stack, design system
 │   ├── spa/                    #   ── pick by need; single-spa + mf can combine ──
@@ -125,6 +126,7 @@ Flutter 3.44 (Riverpod 3 · GoRouter · Material 3) · React Native 0.85 (Expo S
 - **Event-driven**: transactional Outbox, idempotent consumers, sagas with compensation, correlation IDs.
 - **Public API facade** (opt-in, for third parties): contracts as product — OpenAPI 3.1 + AsyncAPI 3.0, Standard Webhooks (HMAC), OAuth 2.1, Problem Details (RFC 9457), rigorous versioning.
 - **Backend for Frontend** (opt-in): thin, client-specific aggregation layer — owned by a frontend team, no domain logic; scoped per client type and/or per microfrontend slice.
+- **Deployment & environments** (opt-in): separate the logical contract from the physical layout — consolidate databases early and promote on demand; expand-contract migrations as a pre-rollout step; zero-downtime release (rolling/blue-green) with graceful shutdown and feature flags; secrets via a manager (envelope-encrypt per-customer secrets); dev/prod parity from one canonical packaging artifact; IaC kept separate from app deploy. Decision-aware: a monolith install reads the single-deployable story, a microservices install reads the distributed one.
 - **Microfrontends**: Module Federation is the 2026 default for homogeneous React (single shell, products as router layouts, capabilities as remote MFEs, enabled per license without redeploy); Single-SPA orchestrates mixed frameworks; the two combine.
 
 ## Key principles
