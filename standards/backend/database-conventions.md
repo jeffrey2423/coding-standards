@@ -2,7 +2,7 @@
 title: PostgreSQL Database Conventions
 platform: backend
 load_when: "Designing schema or EF Core mappings — naming, keys, indexes, snake_case."
-updated: 2026-06
+updated: 2026-07
 ---
 
 # PostgreSQL Database Conventions
@@ -52,7 +52,7 @@ CREATE TABLE products (
     name VARCHAR(200) NOT NULL,
     price DECIMAL(18,2) NOT NULL,
     is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
     created_by_user_id UUID REFERENCES users(id)
 );
 
@@ -71,9 +71,9 @@ CREATE TABLE products (
     name VARCHAR(200),
     price DECIMAL(18,2),
     is_active BOOLEAN,                          -- Boolean flag
-    created_at TIMESTAMP,                       -- Audit field
+    created_at TIMESTAMPTZ,                       -- Audit field
     created_by_user_id UUID REFERENCES users(id),
-    updated_at TIMESTAMP,
+    updated_at TIMESTAMPTZ,
     updated_by_user_id UUID REFERENCES users(id)
 );
 
@@ -85,7 +85,7 @@ public class Product
     public string Name { get; set; }            // → name
     public decimal Price { get; set; }          // → price
     public bool IsActive { get; set; }          // → is_active
-    public DateTime CreatedAt { get; set; }     // → created_at
+    public DateTimeOffset CreatedAt { get; set; }     // → created_at
     public Guid CreatedByUserID { get; set; }   // → created_by_user_id
 }
 
@@ -212,7 +212,7 @@ CREATE TABLE products (
     name VARCHAR(200),
     created_by_user_id UUID REFERENCES users(id),   -- Who created
     updated_by_user_id UUID REFERENCES users(id),   -- Who last updated
-    created_at TIMESTAMP,
+    created_at TIMESTAMPTZ,
     updated_at TIMESTAMP
 );
 
@@ -224,8 +224,8 @@ public class Product
     public string Name { get; set; }                // → name
     public Guid CreatedByUserID { get; set; }       // → created_by_user_id
     public Guid? UpdatedByUserID { get; set; }      // → updated_by_user_id
-    public DateTime CreatedAt { get; set; }         // → created_at
-    public DateTime? UpdatedAt { get; set; }        // → updated_at
+    public DateTimeOffset CreatedAt { get; set; }         // → created_at
+    public DateTimeOffset? UpdatedAt { get; set; }        // → updated_at
 }
 ```
 
@@ -380,7 +380,7 @@ CREATE TABLE auth_users_prj (
     code VARCHAR(50) NOT NULL,
     name VARCHAR(200) NOT NULL,
     is_active BOOLEAN NOT NULL,
-    last_synced_at TIMESTAMP NOT NULL DEFAULT NOW()
+    last_synced_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX ix_auth_users_prj_code ON auth_users_prj(code);
@@ -394,7 +394,7 @@ CREATE TABLE invt_products_prj (
     name VARCHAR(200) NOT NULL,
     price DECIMAL(18,2),
     is_active BOOLEAN NOT NULL,
-    last_synced_at TIMESTAMP NOT NULL DEFAULT NOW()
+    last_synced_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- ❌ INCORRECT: Old naming conventions
@@ -416,7 +416,7 @@ public class AUTH_UserPrj
     public string Code { get; set; } = null!;
     public string Name { get; set; } = null!;
     public bool IsActive { get; set; }
-    public DateTime LastSyncedAt { get; set; }
+    public DateTimeOffset LastSyncedAt { get; set; }
 }
 
 public class INVT_ProductPrj
@@ -426,7 +426,7 @@ public class INVT_ProductPrj
     public string Name { get; set; } = null!;
     public decimal Price { get; set; }
     public bool IsActive { get; set; }
-    public DateTime LastSyncedAt { get; set; }
+    public DateTimeOffset LastSyncedAt { get; set; }
 }
 
 // DbContext with explicit table mapping
@@ -465,7 +465,7 @@ CREATE TABLE orders (
     customer_id UUID NOT NULL,                  -- References sale_customers_prj.id (no FK)
     created_by_user_id UUID NOT NULL,           -- References auth_users_prj.id (no FK)
     amount DECIMAL(18,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Validation in application layer before insert:
@@ -576,7 +576,7 @@ public class Product
     public string Name { get; set; }            // → name
     public decimal Price { get; set; }          // → price
     public bool IsActive { get; set; }          // → is_active
-    public DateTime CreatedAt { get; set; }     // → created_at
+    public DateTimeOffset CreatedAt { get; set; }     // → created_at
     public Guid CreatedByUserID { get; set; }   // → created_by_user_id
     public string APIKey { get; set; }          // → api_key
     public string HTTPEndpoint { get; set; }    // → http_endpoint
@@ -589,7 +589,7 @@ CREATE TABLE products (  -- or 'product' if pluralization disabled
   name VARCHAR(200) NOT NULL,
   price DECIMAL(18,2) NOT NULL,
   is_active BOOLEAN NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_by_user_id UUID NOT NULL REFERENCES users(id),
   api_key VARCHAR(100),
   http_endpoint VARCHAR(500)

@@ -2,7 +2,7 @@
 title: Backend Development Standards
 platform: backend
 load_when: "Any backend/.NET implementation — endpoints, handlers, EF Core, validation, testing."
-updated: 2026-06
+updated: 2026-07
 ---
 
 # Backend Development Standards
@@ -158,6 +158,33 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 - Filters are extremely simple
 - Query is highly dynamic and text-based (use DynamicLinq)
 - Need maximum raw performance (use linq2db)
+
+### Raw SQL Policy (`ExecuteSqlRaw` / `SqlQueryRaw`)
+
+- **MUST** treat the ORM as the default for **all** database access. Reach for hand-written SQL strings (`ExecuteSqlRawAsync`, `ExecuteSqlInterpolatedAsync`, `SqlQueryRaw`) **only where the ORM genuinely cannot reach** — never as a shortcut or for ordinary CRUD. If EF Core (or linq2db / LinqKit) can express the write or read, use it.
+- **MUST** express bulk `DELETE` / `UPDATE` via **`ExecuteDeleteAsync` / `ExecuteUpdateAsync`** rather than a raw statement.
+- **MUST** bind every raw-SQL value as a parameter (`{0}`, `{1}`) — never string-interpolate user or domain values into the SQL text.
+- **MUST** document, in an inline comment at the call site, which sanctioned exception applies and why the ORM cannot reach it.
+
+**Sanctioned exceptions — the only cases where raw SQL is allowed:**
+- **Session GUCs** — e.g. `SELECT set_config('app.tenant_id', @p0, true)` to set the tenant at the write site. There is no EF Core API for a PostgreSQL session variable, and Row-Level Security depends on it.
+- **Upserts** — `INSERT … ON CONFLICT DO NOTHING / DO UPDATE`. EF Core has no first-class upsert; the atomic, idempotent form is only expressible in SQL. (Plain deletes/updates around it are **not** upserts and must use the ORM.)
+- **`SECURITY DEFINER` function calls** — RLS-bypassing lookups exposed as PostgreSQL functions the ORM cannot model.
+
+```csharp
+// ✅ CORRECT — sanctioned exception (session GUC), parameterized, documented
+// Raw SQL exception: PostgreSQL session variable — no EF Core API; RLS depends on it.
+await db.Database.ExecuteSqlInterpolatedAsync(
+    $"SELECT set_config('app.tenant_id', {tenantId}, true)", ct);
+
+// ✅ CORRECT — bulk delete via the ORM, not a raw statement
+await db.Orders.Where(o => o.Status == OrderStatus.Draft)
+    .ExecuteDeleteAsync(ct);
+
+// ❌ WRONG — ordinary CRUD as raw SQL, values string-interpolated (SQL injection + bypasses the ORM)
+await db.Database.ExecuteSqlRawAsync(
+    $"UPDATE orders SET status = '{status}' WHERE id = '{id}'");
+```
 
 ### Development Tools
 - **dotnet CLI**: Project management, build, test, and restore
@@ -643,38 +670,6 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
     }
 }
 ```
-
-## Security Standards
-
-### Authentication & Authorization
-- **JWT Tokens**: Proper expiration and refresh token handling
-- **RBAC**: Role-based access control
-- **Validation**: Input validation on all endpoints (FluentValidation)
-- **Rate Limiting**: Throttle public endpoints to prevent abuse
-- **Environment**: HTTPS only in production, secrets in env variables
-
-### Data Protection
-- Encrypt sensitive data at rest and in transit
-- Never commit secrets to repository
-- Implement audit logging for critical operations
-- OWASP Top 10 compliance
-- Regular dependency security audits with `dotnet list package --vulnerable`
-
-## Performance Standards
-
-### Database Optimization
-- Proper indexing on frequently queried fields
-- Connection pooling via EF Core 10
-- Pagination for large datasets (Skip/Take or cursor-based)
-- Avoid N+1 queries with `.Include()` and `.ThenInclude()`
-- Query monitoring and slow query logging
-- Use `AsNoTracking()` for read-only queries
-
-### Caching Strategy
-- **Distributed Cache**: Redis for session data and frequently accessed data
-- **Memory Cache**: In-memory caching for configuration
-- **TTL Strategy**: Appropriate time-to-live for different data types
-- **Invalidation**: Event-driven cache invalidation
 
 ## Error Handling
 
