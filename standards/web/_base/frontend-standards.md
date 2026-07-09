@@ -77,6 +77,8 @@ This document defines the frontend development standards for enterprise applicat
 - Use dependency inversion for external concerns
 - The domain layer imports nothing from other layers
 
+> For the frontend-specific tactical patterns — value objects in TypeScript, the client-mirror/server-authoritative rule, the anti-corruption layer, when to add a hexagonal core, and how to **enforce** these layer boundaries with lint — see [`frontend-clean-architecture.md`](frontend-clean-architecture.md).
+
 ---
 
 ## 2. Technology Stack
