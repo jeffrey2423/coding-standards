@@ -2,7 +2,7 @@
 title: Design System & UX
 platform: web
 load_when: "UI/visual work — colors, typography, spacing, accessibility, performance targets."
-updated: 2026-06
+updated: 2026-07
 ---
 
 # Design System & UX
@@ -309,6 +309,63 @@ typography:
     badge: "text-xs font-semibold leading-none"
     tooltip: "text-sm font-normal leading-snug"
 ```
+
+### Layout & Spacing
+
+A single **4px base** scale drives every gap, padding, and margin. A **density rule** decides which steps you reach for: dense data surfaces (tables, toolbars, chip clusters) pack close; spacious surfaces (forms, marketing, empty states) breathe.
+
+```yaml
+spacing_px:   # 4px base — use Tailwind steps, never arbitrary values
+  "1": 4
+  "2": 8
+  "3": 12
+  "4": 16
+  "5": 20
+  "6": 24
+  "8": 32
+  "10": 40
+  "12": 48
+  "16": 64
+
+density_rule:
+  dense:    "4 / 8 / 12 — data-heavy UI: table rows, toolbars, chip clusters"
+  spacious: "16 / 24 / 32 — forms, marketing, empty states"
+```
+
+### Shapes (Radii)
+
+Radius scales with the size of the element. **Fully round (`full`) is for pills and avatars only** — rectangular controls (buttons, inputs) are never fully round.
+
+```yaml
+radii_px:
+  sm:   6      # small inset elements, chips
+  md:   8      # buttons, inputs, selects (the workhorse)
+  lg:   12     # cards, modals, sheets
+  full: 9999   # pills, avatars ONLY
+```
+
+### Elevation & Depth
+
+Minimal and meaningful — three steps, used sparingly. **In dark mode, signal depth with surface lightness, not heavy shadows.**
+
+```yaml
+elevation:
+  sm: "hairline + subtle shadow — default for cards"
+  md: "popovers, dropdowns, toasts"
+  lg: "modals, sheets — the only clearly-lifted surfaces"
+  dark_mode: "raise via a lighter surface token, not a stacked drop shadow"
+```
+
+### Components
+
+Every component is **token-bound** — it reads spacing, radii, elevation, and semantic color tokens, never hard-coded values. Core rules:
+
+- **Button** — variants (`primary` / `secondary` / `ghost` / `danger`) all use `radii.md`; **one `primary` per view**. Any text-on-fill MUST meet ≥ 4.5:1 contrast in **both** themes (verify the dark-remapped fill, not just the light one).
+- **Status pill / chip** — semantic color is **always paired with an icon + text label**, never color alone (see [Accessibility](#accessibility)); label text stays in the primary text token, the hue is the icon/tint.
+- **Input / Select** — surface fill with a default border → strong border on hover; a **2px focus ring at the theme-aware focus token + 2px offset**.
+- **Card** (`radii.lg`, `elevation.sm`) · **Modal / Sheet** (raised surface, `radii.lg`, `elevation.lg`; sheet = mobile bottom-slide) · **Toast** (raised surface, `radii.md`, `elevation.md`, leading semantic icon).
+- **Table** — default-border rows, muted headers; **all numeric columns use `font-mono` + `tabular-nums`**.
+- **Interactive targets** — minimum **24×24px** (44×44px on touch-first surfaces); taken/disabled states stay visible, never removed.
 
 ### Assets & Systems Configuration
 
