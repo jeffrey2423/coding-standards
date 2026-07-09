@@ -6,6 +6,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-07
+
+### Added
+- **Frontend Clean Architecture & DDD standard** (`web/_base/frontend-clean-architecture.md`) — the frontend translation of `core/clean-architecture-ddd.md`: the dependency rule with React / TanStack / Zustand / the HTTP client as the outermost adapters, value objects in TypeScript (`Result<VO>`), the client-mirror/server-authoritative rule, the anti-corruption mapper at the API boundary, when to add a hexagonal core (thin vs rich feature), where each library lives, and how to **enforce** the layer boundaries with lint (`import/no-restricted-paths`, `dependency-cruiser`) — the frontend has no compiler boundary like the backend's projects. Structure-agnostic: it defers the module/domain/feature folder layout to `frontend-standards.md` §4, so the two docs stay one consistent source of truth.
+- **Security & Quality Rules** (`core/security-quality-rules.md`, always installed) — cross-cutting rules distilled from real static-analysis findings: secrets handling, HTTPS/CORS, regex **ReDoS** timeouts, container hardening (non-root, pinned tags, `HEALTHCHECK`), code smells, and a "keep the rules alive" quality-gate governance loop. The .NET/C# hygiene section is gated to `when:backend`, so web/mobile-only installs don't carry C# rules.
+- **Code Review Checklist** (`core/code-review-checklist.md`, always installed) — an adversarial "verify claims against reality" stance, a per-facet checklist (security / correctness / performance / error handling / maintainability / test quality), a severity rubric, and a done/not-done gate.
+- **Raw SQL Policy** in `backend/backend-standards.md` — the ORM is the default for all data access; bulk writes use `ExecuteDeleteAsync` / `ExecuteUpdateAsync`; raw SQL is allowed only for three sanctioned exceptions (session GUCs, `ON CONFLICT` upserts, `SECURITY DEFINER` calls), each with bound parameters and documented at the call site.
+- **Design-system layout tokens** in `web/_base/design-system-ux.md` — a 4px spacing scale with a density rule, a radii scale (`full` reserved for pills/avatars), a three-step elevation model (tone over shadow in dark mode), and token-bound component rules (contrast, focus ring, 24–44px targets).
+
+### Changed
+- **Testing strategy** (`core/testing-strategy.md`) enriched with coverage targets (≥80% backend / ≥75% frontend / 100% contract boundaries; P1-in-prod → 0), risk-based prioritization (R = Impact × Probability with P0–P3 bands), and test-design heuristics (ISO techniques, data buckets, adversarial personas, a 5–7 edge-case quota, traceability).
+
+### Fixed
+- **`backend/backend-standards.md`** — folded the duplicated Security and Performance sections into the single, richer copy.
+- **`backend/database-conventions.md`** — examples used `DateTime` and bare `TIMESTAMP`, contradicting the repo's own `DateTimeOffset` → `TIMESTAMPTZ` mandate; all correct examples are now aligned.
+
 ## [2.7.0] - 2026-06
 
 ### Added
